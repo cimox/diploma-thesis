@@ -1,0 +1,8 @@
+
+
+
+
+
+Nowadays we can see Big Data processing and analysis in many domains. As a amounts of data growing, more people are focusing on this problem. The most affected domains are social media websites like Facebook or Twitter. A data from such a sources are streaming in huge amounts and changing in real-time, called data streams. We want to process and analyze data streams in real-time to provide users personalized and valuable outputs. The most common approach to handle data streams is map-reduce paradigm, e.g. batch data processing. Proposed methods are not meeting our requirement to process data streams in real-time. To achieve these requirements, we need use different approach called data stream processing which is built on Lambda Architecture.
+
+Processing and analysis of big data streams is a complex task, because we need to provide low-latency, scalable and fault-tolerant solution. In our project, we analyze existing solutions and frameworks to analyze data streams. We provide verification of its characteristics in different kind of tasks. Accordingly to this, we propose a application for processing and analyzing big data streams (e.g. Twitter data stream), which allows users to get valuable outputs changing in real-time.
