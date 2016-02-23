@@ -1,0 +1,3 @@
+- pociatky v r. 2006, kedy vznikol Hadoop, od roku 2011 velky buzzword
+- 2015, machine learning, deep learning, GP
+- 
