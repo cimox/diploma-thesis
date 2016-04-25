@@ -1,3 +1,8 @@
 - pociatky v r. 2006, kedy vznikol Hadoop, od roku 2011 velky buzzword
 - 2015, machine learning, deep learning, GP
-- 
+- Big Data startups received $6.64B in venture capital investment in 2015, 11% of total tech VC.
+- rok 2015 bol rokom Spark-u, obrovska adopcia velkymi firmami - IBM, Cloudera. Vznika velka open-source komunita okolo sparku
+- Momentum ziskavaju aj dalsie frameworky ako Storm, Flink, Samza, ...
+- Zacina sa vela hovorit o Mesos-e
+- Rapidny vyvoj databaz: Neo4j, InfluxDB, vyvyjaju sa dokonca aaj tradicne DWH - Snowflake db
+- AI, vela sa o tom zacina hovorit v suvislosti s datami resp. Big Data,AI a Big Data sa stavaju kamaratmi. vid Spark Mlib. Zacina sa hovorit viac o deep learning.
