@@ -1,15 +1,15 @@
-\chapter{Detekcia trendov v kontexte prúdového spracovania}
-\label{Detekcia trendov v kontexte prúdového spracovania}
+\chapter{Metóda pre detekciu trendov v prúde udalostí}
+\label{Metóda pre detekciu trendov v prúde udalostí}
+Navrhujeme metódu detekovanie trendov v prúde udalostí s polo-automatickým výberom vhodnej metódy. Našim cieľom je odbremeniť doménového experta od náročného výberu správnej metódy pre detekciu trendu v prúde. Mohli by sme sa zamerať na detekciu trendov v doménovo špecifickej oblasti, ale tento problém je z veľkej miery preskúmaný. Preto sa zameriavame na rôzne domény, či ide o senzorové syntetické dáta, dáta z energetickej alebo počítačovej siete, či používateľmi vytváraný obsah na sociálnych sietiach a mikro-blogových službách. Cieľom je teda: použiteľnosť a jednoduchosť nami navrhovanej metódy pre doménového experta bez nutnosti detailnej znalosti o fungovaní metódy a modelu, ktoré vytvára.
+Teda, kladieme nasledujúce hypotézy:
+\begin{hypothesis}{Naše riešenie detekuje trendy v prúde dát s istou pravdepodobnosťou použitím polo-automatického výberu vhodnej metódy pre detekciu trendov a zároveň poskytuje výsledky v reálnom čase}
+\end{hypothesis}
+\begin{hypothesis}{Metóda je ľahká na použitie a interpretované výsledky sú jednoduché na pochopenie pre doménového experta bez detailnej znalosti o fungovaní modelu.}
+\end{hypothesis}
 
--- navrh mojej metody -- \\
----> tu uz nieco musi byt\\
-Detekcia trendov pre jeden element, pre celu skupinu alebo jednotlivý segment.
-
+Pri detekcií trendu bude nutné zohľadniť nasledujúce elementy:
 \begin{itemize}
-	\item Anomalie
-	\item Eventy
-	\item Trendy
-	\item Sezonnost
-	\item Drilldown nad datami
-	\item PREDIKCIE
+	\item anomálie, chyby a spam,
+	\item sezónnosť dát,
+	\item concept drift a zmeny,
 \end{itemize}
