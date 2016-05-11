@@ -1,8 +1,11 @@
 \chapter{Analytické úlohy v prúde udalostí}
 \label{Analytické úlohy v prúde udalostí}
 Spracovanie a dolovanie znalostí predstavuje výzvu, zvláštnu pozornosti si tieto úlohy vyžadujú pri spracovaní a analýze prúdu udalostí. Prúd udalostí je tiež často nazývaný \textit{prúd dát} alebo \textit{údajov}, či len skrátene \textit{prúd}. V tomto texte budeme pre jednoduchosť používať najmä termín \textit{prúd} \citep{tran2014change}. Avšak môžu sa vyskytnúť aj terminý ako: \textit{prúd dát}, \textit{prúd udalostí}, \textit{sekvencia udalostí, či elementov}, pričom všetky termíny majú v tomto texte \textit{rovnaký} význam.\\
-\begin{definition}{Prúd je nekonečná sekvencia elementov}
-$S$ = {()}
+\begin{definition}{Prúd je potenciálne nekonečná sekvencia elementov \citep{tran2014change}.}
+\begin{align*}
+	S = \{(X_1,T_1), ..., (X_j,T_j), ...\}
+\end{align*}
+Kde každý element je pár $(X_j,T_j)$ kde $X_j$ je d-dimenzionálny vektor $X_j = (x_1, x_2, ..., x_d)$ prichádzajúci v čase $T_j$. $T_j$ je často navýzaný aj časová pečiatka, existujú dva typy časovej pečiatky: explicitná je generovaná keď dáta dorazia, implicitná je priradená vektoru v čase ich vzniku.
 \end{definition}
 
 Takmer každé odvetvie dnes generuje masívne množstvo dát, ktoré obsahujú hodnotné znalosti a poznanie. Vzhľadom na veľký objem vzniknutých dát, analytyci často strácajú schopnosť dolovať v celej sade dát. Stáva sa preto častým zvykom, že sa analyzuje len reprezentujúca vzorka, pretože to predstavuje menšiu časovú výzvu pre doménového experta \citep{hulten2001mining}. Tvrdíme, že bude pre doménoveho experta vysokým prínosom možnosť vykonávať analýzy nad prúdom v reálnom čase. Výstupy z takejto analýzy sú na rôznej granularite a úrovni, pričom môžu byť neskôr použité na ďalšie spracovanie alebo na priame prezentovanie výsledkov.
@@ -29,14 +32,15 @@ Dolovanie z prúdiacih dát dnes predstavuje niekoľko výziev. Jednou z oblast�
 	\item Analýza časových radov použitím symbolickej reprezentácie časových radov v prúde dát. Takáto reprezentácia nám umožňuje redukciu veľkosti prenášaných dát. Táto technika pozostáva z dvoch hlavných krokov, aproximácia po častiach a následná transformácia výsledku do diskrétnych veličín.
 \end{itemize}
 
+\emptysinglepage
 \section{Detekcia zmien}
-Detekcia zmien zohráva, v dnešnom rýchlo sa meniacom svete, dôležitú úlohu. Zmeny nastávajú veľmi rýchlo a nečakane. Preto je preto stúpa potreba detekcie zmeny a následná správna reakcia, ktorá vyplynie z detekovanej zmeny. Na to aby sme boli schopný na tieto zmeny adekvátne reagovať je potrebné dáta spracovávať tak ako vznikajú a pozerať sa na ne ako na prúd udalostí. Tradičné metódy pre paralelné spracovanie uvažujú len statickú kolekciu dát \citep{tran2014change}.\\
+Detekcia zmien zohráva, v dnešnom rýchlo sa meniacom svete, dôležitú úlohu. Zmeny nastávajú veľmi rýchlo a nečakane. Preto stúpa potreba detekcie zmeny a následná správna reakcia, ktorá vyplynie z detekovanej zmeny. Na to aby sme boli schopný na tieto zmeny adekvátne reagovať je potrebné dáta spracovávať tak ako vznikajú a pozerať sa na ne ako na prúd udalostí. Tradičné metódy pre paralelné spracovanie uvažujú len statickú kolekciu dát \citep{tran2014change}.\\
 
 Detekcia zmeny predstavuje proces identifikácie zmeny aktuálneho stavu objektu voči predchádzajúcemu. Na tento objekt sa pozeráme v rôznom čase. Dôležitý rozdiel medzi zmenou a rozdielom je, že zmena hovorí o prechode objektu do iného stavu, zatiaľ čo rozdiel znamená nepodobnosť v atribútoch dvoch objektov. V kontexte prúdu detekovanie zmeny je proces segmentácie prúdu udalostí do rôznych segmentov a identifikovanie miest kde sa zmení dynamika prúdu \citep{ross2009online}. Metóda pre detekciu zmien musí riešiť nasledujúce úlohy \citep{tran2014change}: \textit{detekcia zmeny} a \textit{lokalizácia zmeny}. Ďalší rozdiel, ktorý je potrebné zadefinovať, je medzi rozdiel detekovaním posunu pojmu (angl. concept drift, ďalej len \textit{concept drift}). Detekcia concept drift-u sa sústreďuje na označkované dáta, zatiaľ čo detekcia zmeny pracuje s označkovanými rovnako ako s neoznačkovanými dátami.\\
 
 Metódy pre detekovanie zmien môžme klasifikovať do nasledujúcich prístupov \citep{liu2010mining}: \textit{metódy založené na stave}, \textit{metódy sledujúce trend} a \textit{prahové metódy}. Algoritmus pre detekciu zmien by mal spĺňať aspoň nasledovné požiadavky: \textit{presnosť}, \textit{rýchlosť} a \textit{odpoveď v reálnom čase}. Algoritmus by tiež mal detekovať čo najmenej chybných zmien a čo najviac správnych presných miest zmeny. Algoritmy by mali byť prispôsobené reálnemu prostrediu a spracovaniu prúdov vysokých objemov a rýchlostí. Na obrázku \ref{fig:zmeny-vseobecny-dia} je zobrazený všeobecný diagram pre detekciu zmeny v prúde udalostí.
 
-\myFigure{images/2_zmeny_vseobecny-diagram}{Všeobecný diagram zobrazujúci detekciu zmeny v prúde udalostí.}{test-dia}{0.5}{h!}\label{fig:zmeny-vseobecny-dia}
+\myFigure{images/2_zmeny_vseobecny-diagram}{Všeobecný diagram zobrazujúci detekciu zmeny v prúde udalostí \citep{tran2014change}.}{test-dia}{0.5}{h!}\label{fig:zmeny-vseobecny-dia}
 
 Prístupy k detekovaniu zmien v prúde dát \citep{tran2014change}:
 \begin{itemize}
@@ -89,7 +93,7 @@ Detekcia trendov predstavuje kritickú úlohu pre analytikov. Reagovať na vznik
 \end{enumerate}
 %TODO: nakresliť obrázok z článku twittermonitor
 %TODO: pridať ďalšie dve metódy z článku
-
+\emptysinglepage
 \section{Rozpoznanie pocitu a nálady z používateľom generovaného obsahu}
 Analýza pocitu alebo nálady (angl. sentiment analysis) može byť chápaný ako problém klasifikácie. Úlohoou je to klasifikovať správy (najčastejšie v kontexte sociálnych sietí) do dvoch kategórií na zákalde ich pozitívnych alebo negatívnych dojmov. Ak by sme pracovali s dátami zo sociálnej siete Twitter, je možné použiť na označkovanie správ. pomerne dobre, extrahovaním emotikonov, ktoré vyjadrujú pocity používateľa \citep{bifet2010sentiment}. \\
 Bifet and Frank publikovali v práci \citep{bifet2010sentiment} tri metódy a ich overenie na rozpoznanie nálady a pocitov z používateľom generovaného obsahu na sociálnej sieti Twitter. Experimentovali s tromi inkrementálnymi metódami, ktoré sú vhodné na spracovanie prúdu dát.
@@ -108,9 +112,10 @@ kde $w$ je váhovaný vektor, $b$ je sklon, $\lambda$ regulačný parameter a oz
 
 \paragraph{Hoeffdingov strom} (angl. Hoeffding tree) je najznámejšia implementácia rozhodovacích stromov v použití prúdového spracovania. Hoeffdingov algoritmus implementuje stratégiu pred-prerezávania, ktorá je založená na Hoeffdingovom ohraničení. Toto umožňuje inkrementálne budovanie rozhodovacieho stromu. Uzol stromu je rozvinutý hneď ako obsahuje dostatočne silnú štatistickú informáciu. Existujú ďalšie sofistikované implementácie Hoeffdingových stromov, ktoré implementujú rýchlejšie a efektívnejšie algoritmy, napr. VFDT - Very Fast Decision Trees \citep{domingos2000mining} alebo CVFDT - Concept adapting Very Fast Decision Trees \citep{hulten2001mining}
 
-\section{ETL proces a kvalita dát}
+%\section{ETL proces a kvalita dát}
 %TODO: stručne
 
 
 \section{Zhodnotenie}
-TODO: zhodnotenie analytických uloh, aké sú problémy atd.
+Existuje mnoho úloh, ktoré potrebujú často riešiť doménový experti. Pre tieto úlohy existujú celé sady algoritmov a metód, ktoré boli navrhnuté všeobecne alebo pre špecifickú doménu. Zaoberať sa všetkými úlohami pri spracovaní prúdu údajov je mimo rozsahu tejto práce a tiež rozobrať každú metódu pre analytickú úlohu. \\
+V tejto kapitole sme zhrnuli najčastejšie úlohy, s ktorými sa stretávajú doménovy experti a vybrané metódy na ich riešenie. Opísané metódy sú doménovo špecifické a nie sú použiteľné univerzálne pre každú doménu typu dát genericky.
