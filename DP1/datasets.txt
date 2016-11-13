@@ -1,2 +1,0 @@
-http://www.sgi.com/tech/mlc/db/
-https://archive.ics.uci.edu/ml/datasets.html
