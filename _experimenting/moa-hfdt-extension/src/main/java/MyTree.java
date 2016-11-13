@@ -6,13 +6,18 @@ import moa.classifiers.core.attributeclassobservers.AttributeClassObserver;
 import moa.classifiers.core.attributeclassobservers.GaussianNumericAttributeClassObserver;
 import moa.classifiers.core.attributeclassobservers.NominalAttributeClassObserver;
 import moa.classifiers.core.splitcriteria.SplitCriterion;
+import moa.classifiers.trees.HoeffdingTree;
 import moa.core.AutoExpandVector;
 import moa.core.DoubleVector;
 import moa.core.Measurement;
 import moa.options.ClassOption;
 import com.yahoo.labs.samoa.instances.Instance;
 
-public class MyTree extends AbstractClassifier {
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class MyTree extends HoeffdingTree {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,6 +40,8 @@ public class MyTree extends AbstractClassifier {
 
     protected double weightSeenAtLastSplit;
 
+    private File f;
+
     public boolean isRandomizable() {
         return false;
     }
@@ -45,10 +52,28 @@ public class MyTree extends AbstractClassifier {
         this.observedClassDistribution = new DoubleVector();
         this.attributeObservers = new AutoExpandVector<AttributeClassObserver>();
         this.weightSeenAtLastSplit = 0.0;
+
+
+        try {
+            this.f = new File("test.txt");
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void trainOnInstanceImpl(Instance inst) {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(this.f);
+            fw.write(inst.toString() + "\n");
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         this.observedClassDistribution.addToValue((int) inst.classValue(), inst
                 .weight());
         for (int i = 0; i < inst.numAttributes() - 1; i++) {
