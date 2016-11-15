@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decision tree</title>
+
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+<script>
+    function toJson(x) {
+        var result = {};
+        result.name = x.rule;
+
+        if ((!!x.left && !x.left.value) ||
+                (!!x.right && !x.right.value))
+            result.children = [];
+        else
+            result.size = parseInt(x.samples);
+
+        var index = 0;
+        if (!!x.left && !x.left.value)
+            result.children[index++] = toJson(x.left);
+
+        if (!!x.right && !x.right.value)
+            result.children[index++] = toJson(x.right);
+
+        return result;
+    }
+
+    $.get('http://127.0.0.1:8080/tree-data/classic/', function (tree) {
+        console.log(tree);
+    });
+
+</script>
+
+</body>
+</html>
