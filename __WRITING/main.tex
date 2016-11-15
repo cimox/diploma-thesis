@@ -1,0 +1,208 @@
+	%!TEX root = ./main.tex
+
+%\documentclass[11pt, a4paper, titlepage, slovak]{book}
+\documentclass[12pt, a4paper, titlepage, slovak]{book}
+
+%Includes all neccessary packets and contains some useful commands
+\include{i10preamble}
+
+% zalamovanie slov
+\hyphenation{
+Twitter
+Twittru
+map-reduce
+oblastiach
+korpusov
+processing
+modelu
+vstupno
+ZeroMQ
+tieto
+priamo
+vtedy
+používateľom
+}
+
+
+%--------------------------------------------------------------
+\begin{document}
+
+% allow more flexible whitespaces to avoid hyphenation and overfull hboxes
+\sloppy %lepsi algoritmus na zalamovanie riadkov
+
+% 'see'-entries for the index
+\include{indexAddOn}
+
+
+%--------------------------------------------------------------
+% uvodne strany... obal, titulka, abstrakt, uvod, ...
+%--------------------------------------------------------------
+\frontmatter
+
+%use the titlepage from the 'images' directory 
+\newgeometry{rmargin=20mm}
+\begin{titlepage}
+% centrovanie
+\begin{center}                                                                                                                                                   
+{\Large Slovenská technická univerzita v Bratislave} \\
+{\Large Fakulta informatiky a informačných technológií} \\
+\vspace*{1\baselineskip}
+% cislo prace
+\large {}
+\vfill % vert. plnenie prazdnymi medzerami                                                                                                                                                                    
+
+%\newpage
+
+{{Bc. Matúš Cimerman}} \\
+\vspace*{1\baselineskip}
+{\LARGE {\textbf{Analýza prúdu prichádzajúcich udalostí použitím rôznych metód pre analýzu údajov}}} % nadpis
+%{\huge {Analýza prúdu údajov}} % nadpis
+\\
+\vspace*{1\baselineskip}
+%{\Large {Bakalárska práca}}\\
+\textit{Diplomová práca}\\
+\vfill %vert. plnenie
+\end{center}
+% end centrovanie
+{Vedúci práce: Ing. Jakub Ševcech}\\
+\\
+%\vspace*{1\baselineskip}
+{máj, 2016}
+\end{titlepage}
+\emptydoublepage
+
+\begin{titlepage}
+% centrovanie
+\begin{center}                                                                                                                                                   
+{\Large Slovenská technická univerzita v Bratislave} \\
+{\Large Fakulta informatiky a informačných technológií} \\
+\vspace*{1\baselineskip}
+% cislo prace
+\large {}
+\vfill % vert. plnenie prazdnymi medzerami                                                                                                                                                                    
+
+
+{{Bc. Matúš Cimerman}} \\
+\vspace*{1\baselineskip}
+{\LARGE {\textbf{Analýza prúdu prichádzajúcich udalostí použitím rôznych metód pre analýzu údajov}}} % nadpis
+%{\huge {Analýza prúdu údajov}} % nadpis
+\\
+\vspace*{1\baselineskip}
+%{\Large {Bakalárska práca}}\\
+\textit{Diplomová práca}\\
+\vfill %vert. plnenie
+\end{center}
+% end centrovanie
+{Študijný program: Informačné systémy}\\
+{Študijný odbor: 9.2.6 Informačné systémy}\\
+{Miesto vypracovania: Ústav informatiky, informačných systémov a softvérového inžinierstva, FIIT STU v Bratislave}\\
+{Vedúci práce: Ing. Jakub Ševcech}\\
+\\
+{máj, 2016}
+
+\end{titlepage}
+\restoregeometry
+\thispagestyle{empty}
+\emptydoublepage
+
+%\include{declarationofownwork}
+%\emptydoublepage
+
+%pred abstrakt treba zadanie
+\includepdf[pages={1}]{navrh_1.pdf}
+\includepdf[pages={1}]{navrh_2.pdf}
+
+\includepdf[pages={1}]{zadanie.pdf}
+
+
+%the abstract should include an english and a slovak version
+\include{abstract}
+\emptydoublepage
+
+%acknowledgements
+\include{acknowledgements}
+\emptydoublepage
+
+%conventions applied in the thesis
+%\include{conventions}
+%\emptydoublepage
+
+\renewcommand{\contentsname}{Obsah}
+\singlespacing
+\tableofcontents
+
+\emptydoublepage
+\onehalfspacing
+%\doublespacing
+%
+%\listoffigures
+%\emptydoublepage
+%
+%\listoftables
+%\emptydoublepage
+
+\newtheorem{definition}{Definícia}[section]
+\newtheorem{hypothesis}{Hypotéza}[section]
+
+
+%--------------------------------------------------------------
+% hlavny obsah
+%--------------------------------------------------------------
+\mainmatter
+
+\include{introduction}
+\emptydoublepage
+%\include{evaluation}
+%\emptydoublepage
+\include{methods}
+\emptydoublepage
+\include{solutions}
+\emptydoublepage
+\include{method}
+\emptydoublepage
+%\include{implementation}
+\include{trend}
+\emptydoublepage
+\include{summaryandfuturework}
+\emptydoublepage
+
+%--------------------------------------------------------------
+% prilohy, index
+%--------------------------------------------------------------
+\backmatter
+
+%bibliography
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\protect\numberline{}Literatúra}
+\renewcommand{\bibname}{Literatúra}
+\bibliography{thesis}
+\emptydoublepage
+
+\begin{appendix}
+\include{appendix_01}
+%\include{appendix_02}
+%\include{appendix_03}
+%\include{appendix_04}
+\emptydoublepage
+%\include{appendix_02}
+%\emptydoublepage
+\end{appendix}
+
+
+%index
+%\markboth{Index}{Index}
+%\thispagestyle{plain}
+%\phantomsection
+%\addcontentsline{toc}{chapter}{\protect\numberline{}Index}
+%\printindex
+
+%date of typesetting
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+%\hspace*{\fill}{\tiny Typeset \today}
+
+%--------------------------------------------------------------
+\end{document}
+

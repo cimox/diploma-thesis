@@ -1,0 +1,9 @@
+kafka-python
+flask
+arrow
+mypy-lang
+Sphinx
+sklearn
+numpy
+pandas
+nose
