@@ -19,12 +19,7 @@
  */
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.github.javacliparser.FlagOption;
 import com.github.javacliparser.FloatOption;
@@ -48,6 +43,8 @@ import moa.core.StringUtils;
 import moa.core.Utils;
 import moa.options.ClassOption;
 import com.yahoo.labs.samoa.instances.Instance;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * Hoeffding Tree or VFDT.
@@ -95,8 +92,10 @@ import com.yahoo.labs.samoa.instances.Instance;
  */
 public class MyHoeffdingTree extends AbstractClassifier {
 
-    private FileWriter file;
-    private BufferedWriter bw;
+    public MyHoeffdingTree(PrintWriter fileWriter) {
+        this.fileWriter = fileWriter;
+    }
+
     private PrintWriter fileWriter;
 
     private Integer globalInstCount = 0;
@@ -235,18 +234,22 @@ public class MyHoeffdingTree extends AbstractClassifier {
             StringUtils.appendNewline(out);
         }
 
-        public String myDescribeSubtree(MyHoeffdingTree ht, int indent) {
-            StringBuilder out = new StringBuilder();
-            StringUtils.appendIndented(out, indent, "Leaf ");
-            out.append(ht.getClassNameString());
-            out.append(" = ");
-            out.append(ht.getClassLabelString(this.observedClassDistribution.maxIndex()));
-            out.append(" weights: ");
-            this.observedClassDistribution.getSingleLineDescription(out,
-                    ht.treeRoot.observedClassDistribution.numValues());
-            StringUtils.appendNewline(out);
+        public void describeSubtreeJSON(MyHoeffdingTree ht, JSONArray children) {
+            JSONObject node = new JSONObject();
+            StringBuilder weights = new StringBuilder();
 
-            return out.toString();
+            node.put("className", getClassName(ht));
+            node.put("classNum", this.observedClassDistribution.maxIndex());
+            this.observedClassDistribution.getSingleLineDescription(weights, ht.treeRoot.observedClassDistribution.numValues());
+            node.put("weights", weights.toString());  // TODO: change this to list
+            node.put("leaf", true);
+            children.add(node);
+        }
+
+        private String getClassName(MyHoeffdingTree ht) {
+//            TODO: this is a shitty solution
+            String classString = ht.getClassLabelString(this.observedClassDistribution.maxIndex());
+            return classString.substring(classString.indexOf(':')+1, classString.length()-1);
         }
 
         public int subtreeDepth() {
@@ -264,8 +267,8 @@ public class MyHoeffdingTree extends AbstractClassifier {
             describeSubtree(null, sb, indent);
         }
 
-        public String myGetDescription(StringBuilder sb, int indent) {
-            return myDescribeSubtree(null, indent);
+        public void getDescriptionJSON(JSONArray root) {
+            describeSubtreeJSON(null, root);
         }
     }
 
@@ -364,20 +367,38 @@ public class MyHoeffdingTree extends AbstractClassifier {
             }
         }
 
-        public String myDescribeSubtree(MyHoeffdingTree ht, int indent) {
-            StringBuilder out = new StringBuilder();
+        @Override
+        public void describeSubtreeJSON(MyHoeffdingTree ht, JSONArray parent) {
+            JSONArray newChildren = new JSONArray();
             for (int branch = 0; branch < numChildren(); branch++) {
                 Node child = getChild(branch);
+                JSONObject node = new JSONObject();
                 if (child != null) {
-                    StringUtils.appendIndented(out, indent, "if ");
-                    out.append(this.splitTest.describeConditionForBranch(branch,
-                            ht.getModelContext()));
-                    out.append(": ");
-                    StringUtils.appendNewline(out);
-                    child.describeSubtree(ht, out, indent + 2);
+                    node.put("split", parseSplit(ht, branch));
+                    StringBuilder weights = new StringBuilder();
+                    this.observedClassDistribution.getSingleLineDescription(weights, ht.treeRoot.observedClassDistribution.numValues());
+                    node.put("weights", weights.toString());  // TODO: change this to list
+                    node.put("leaf", false);
+
+                    node.put("children", newChildren);
+                    parent.add(node);
+                    child.describeSubtreeJSON(ht, newChildren);
                 }
             }
-            return out.toString();
+        }
+
+        private JSONObject parseSplit(MyHoeffdingTree ht, int branch) {
+            JSONObject splitNode = new JSONObject();
+            String[] splitString = this.splitTest.describeConditionForBranch(branch, ht.getModelContext()).split(" ");
+            String attribute = splitString[1].substring(splitString[1].indexOf(":")+1, splitString[1].indexOf("]"));
+            String operator = splitString[2];
+            double operand = Double.parseDouble(splitString[3]);
+
+            splitNode.put("attribute", attribute);
+            splitNode.put("operator", operator);
+            splitNode.put("operand", operand);
+
+            return splitNode;
         }
 
         @Override
@@ -546,24 +567,16 @@ public class MyHoeffdingTree extends AbstractClassifier {
         if (this.leafpredictionOption.getChosenIndex() > 0) {
             this.removePoorAttsOption = null;
         }
-
-        try {
-            this.file = new FileWriter("hfdt_training.txt", true);
-            this.bw = new BufferedWriter(file);
-            this.fileWriter = new PrintWriter(this.bw);
-            this.fileWriter.println("Training MyHFDT");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void trainOnInstanceImpl(Instance inst) {
         // Write progress of HFDT training to file
-        this.fileWriter.println("Instance: " + this.globalInstCount++ + ", " + inst.toString());
+//        this.fileWriter.println("Instance: " + this.globalInstCount++ + ", " + inst.toString());
+        JSONArray root = new JSONArray();
         if (this.treeRoot != null) {
-            String desc = myGetModelDescription(4);
-            this.fileWriter.println(desc);
+            getModelDescriptionJSON(root);
+            this.fileWriter.println(root);
         }
 
 
@@ -648,11 +661,11 @@ public class MyHoeffdingTree extends AbstractClassifier {
         this.fileWriter.close();
     }
 
-    public String myGetModelDescription(int indent) {
-        return this.treeRoot.myDescribeSubtree(this, indent);
+    public void getModelDescriptionJSON(JSONArray root) {
+        this.treeRoot.describeSubtreeJSON(this, root);
     }
 
-    @Override
+    //    @Override
     public boolean isRandomizable() {
         return false;
     }
@@ -775,7 +788,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
             FoundNode[] learningNodes = findLearningNodes();
             Arrays.sort(learningNodes, new Comparator<FoundNode>() {
 
-                @Override
+                //                @Override
                 public int compare(FoundNode fn1, FoundNode fn2) {
                     return Double.compare(fn1.node.calculatePromise(), fn2.node.calculatePromise());
                 }
