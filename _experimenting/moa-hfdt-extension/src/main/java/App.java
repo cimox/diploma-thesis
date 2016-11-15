@@ -19,7 +19,6 @@ public class App {
         System.out.println("Running experiment");
 
         Experiment exp = new Experiment();
-//        exp.run(100001, true);
         exp.run(25001, true);
     }
 

@@ -262,7 +262,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
                     : 0.0;
         }
 
-        @Override
+//        @Override
         public void getDescription(StringBuilder sb, int indent) {
             describeSubtree(null, sb, indent);
         }
