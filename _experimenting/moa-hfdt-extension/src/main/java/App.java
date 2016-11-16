@@ -19,7 +19,7 @@ public class App {
         System.out.println("Running experiment");
 
         Experiment exp = new Experiment();
-        exp.run(25001, true);
+        exp.run(35001, true);
     }
 
     private static class Experiment {
@@ -60,8 +60,8 @@ public class App {
                     }
                 }
                 numberSamples++;
-                if (numberSamples > 100000) {
-                    System.out.println("100k");
+                if (numberSamples % 1000 == 0) {
+                    System.out.println(numberSamples + " samples processed");
                 }
                 learner.trainOnInstance(trainInst);
             }
@@ -69,6 +69,10 @@ public class App {
             double accuracy = 100.0 * (double) numberSamplesCorrect / (double) numberSamples;
             double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - evaluateStartTime);
             System.out.println(numberSamples + " instances processed with " + accuracy + "% accuracy in " + time + " seconds.");
+
+            StringBuilder out = new StringBuilder();
+            learner.getDescription(out, 4);
+            System.out.println(out.toString());
         }
     }
 }

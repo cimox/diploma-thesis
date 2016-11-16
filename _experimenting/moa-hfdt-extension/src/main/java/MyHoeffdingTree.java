@@ -247,7 +247,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         private String getClassName(MyHoeffdingTree ht) {
-//            TODO: this is a shitty solution
+//            TODO: better solution
             String classString = ht.getClassLabelString(this.observedClassDistribution.maxIndex());
             return classString.substring(classString.indexOf(':')+1, classString.length()-1);
         }
@@ -369,7 +369,6 @@ public class MyHoeffdingTree extends AbstractClassifier {
 
         @Override
         public void describeSubtreeJSON(MyHoeffdingTree ht, JSONArray parent) {
-            JSONArray newChildren = new JSONArray();
             for (int branch = 0; branch < numChildren(); branch++) {
                 Node child = getChild(branch);
                 JSONObject node = new JSONObject();
@@ -380,6 +379,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
                     node.put("weights", weights.toString());  // TODO: change this to list
                     node.put("leaf", false);
 
+                    JSONArray newChildren = new JSONArray();
                     node.put("children", newChildren);
                     parent.add(node);
                     child.describeSubtreeJSON(ht, newChildren);
@@ -572,11 +572,14 @@ public class MyHoeffdingTree extends AbstractClassifier {
     @Override
     public void trainOnInstanceImpl(Instance inst) {
         // Write progress of HFDT training to file
-//        this.fileWriter.println("Instance: " + this.globalInstCount++ + ", " + inst.toString());
-        JSONArray root = new JSONArray();
         if (this.treeRoot != null) {
-            getModelDescriptionJSON(root);
-            this.fileWriter.println(root);
+            JSONObject root = new JSONObject();
+            JSONArray rootChildren = new JSONArray();
+            root.put("className", "root");
+            root.put("children", rootChildren);
+
+            getModelDescriptionJSON(rootChildren);
+            this.fileWriter.println(root.toJSONString());
         }
 
 
