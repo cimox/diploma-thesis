@@ -19,7 +19,7 @@ public class App {
         System.out.println("Running experiment");
 
         Experiment exp = new Experiment();
-        exp.run(35001, true);
+        exp.run(15001, true);
     }
 
     private static class Experiment {
@@ -29,9 +29,10 @@ public class App {
 
         public Experiment() {
             try {
-                this.file = new FileWriter("tree.json", true);
+                this.file = new FileWriter("tree-training.json", true);
                 this.bw = new BufferedWriter(file);
                 this.fileWriter = new PrintWriter(this.bw);
+                this.fileWriter.println("[");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -39,7 +40,7 @@ public class App {
 
         public void run(int numInstances, boolean isTesting) {
 //          TODO: create inherited version of MyHoeffdingTree
-            Classifier learner = new MyHoeffdingTree(this.fileWriter);
+            Classifier learner = new MyHoeffdingTree(this.fileWriter, numInstances/1000);
             RandomRBFGenerator stream = new RandomRBFGenerator();
             stream.numClassesOption = new IntOption("numClasses", 'c',
                     "The number of classes to generate.", 3, 3, Integer.MAX_VALUE);
@@ -60,11 +61,12 @@ public class App {
                     }
                 }
                 numberSamples++;
-                if (numberSamples % 1000 == 0) {
+                if (numberSamples % 100000 == 0) {
                     System.out.println(numberSamples + " samples processed");
                 }
                 learner.trainOnInstance(trainInst);
             }
+            this.fileWriter.println("]");
             this.fileWriter.close();
             double accuracy = 100.0 * (double) numberSamplesCorrect / (double) numberSamples;
             double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - evaluateStartTime);

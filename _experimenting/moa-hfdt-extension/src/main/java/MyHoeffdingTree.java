@@ -92,13 +92,15 @@ import org.json.simple.JSONObject;
  */
 public class MyHoeffdingTree extends AbstractClassifier {
 
-    public MyHoeffdingTree(PrintWriter fileWriter) {
+    public MyHoeffdingTree(PrintWriter fileWriter, Integer printLimit) {
+        this.printLimit = printLimit;
         this.fileWriter = fileWriter;
     }
 
     private PrintWriter fileWriter;
 
-    private Integer globalInstCount = 0;
+    private Long globalInstCount = 0L;
+    private Integer printLimit = 1;
 
     private static final long serialVersionUID = 1L;
 
@@ -572,14 +574,14 @@ public class MyHoeffdingTree extends AbstractClassifier {
     @Override
     public void trainOnInstanceImpl(Instance inst) {
         // Write progress of HFDT training to file
-        if (this.treeRoot != null) {
+        if (this.treeRoot != null && this.globalInstCount++ % this.printLimit == 0) {
             JSONObject root = new JSONObject();
             JSONArray rootChildren = new JSONArray();
             root.put("className", "root");
             root.put("children", rootChildren);
 
             getModelDescriptionJSON(rootChildren);
-            this.fileWriter.println(root.toJSONString());
+            this.fileWriter.println(root.toJSONString() + ",");
         }
 
 
