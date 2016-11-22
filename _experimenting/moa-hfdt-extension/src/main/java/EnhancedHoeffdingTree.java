@@ -90,9 +90,9 @@ import org.json.simple.JSONObject;
  * @author Richard Kirkby (rkirkby@cs.waikato.ac.nz)
  * @version $Revision: 7 $
  */
-public class MyHoeffdingTree extends AbstractClassifier {
+class EnhancedHoeffdingTree extends AbstractClassifier {
 
-    public MyHoeffdingTree(PrintWriter fileWriter, Integer printLimit) {
+    EnhancedHoeffdingTree(PrintWriter fileWriter, Integer printLimit) {
         this.printLimit = printLimit;
         this.fileWriter = fileWriter;
     }
@@ -216,7 +216,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
             return this.observedClassDistribution.getArrayCopy();
         }
 
-        public double[] getClassVotes(Instance inst, MyHoeffdingTree ht) {
+        public double[] getClassVotes(Instance inst, EnhancedHoeffdingTree ht) {
             return this.observedClassDistribution.getArrayCopy();
         }
 
@@ -224,7 +224,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
             return this.observedClassDistribution.numNonZeroEntries() < 2;
         }
 
-        public void describeSubtree(MyHoeffdingTree ht, StringBuilder out,
+        public void describeSubtree(EnhancedHoeffdingTree ht, StringBuilder out,
                                     int indent) {
             StringUtils.appendIndented(out, indent, "Leaf ");
             out.append(ht.getClassNameString());
@@ -236,7 +236,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
             StringUtils.appendNewline(out);
         }
 
-        public void describeSubtreeJSON(MyHoeffdingTree ht, JSONArray children) {
+        public void describeSubtreeJSON(EnhancedHoeffdingTree ht, JSONArray children) {
             JSONObject node = new JSONObject();
             StringBuilder weights = new StringBuilder();
 
@@ -248,10 +248,10 @@ public class MyHoeffdingTree extends AbstractClassifier {
             children.add(node);
         }
 
-        private String getClassName(MyHoeffdingTree ht) {
+        private String getClassName(EnhancedHoeffdingTree ht) {
 //            TODO: better solution
             String classString = ht.getClassLabelString(this.observedClassDistribution.maxIndex());
-            return classString.substring(classString.indexOf(':')+1, classString.length()-1);
+            return classString.substring(classString.indexOf(':') + 1, classString.length() - 1);
         }
 
         public int subtreeDepth() {
@@ -264,7 +264,6 @@ public class MyHoeffdingTree extends AbstractClassifier {
                     : 0.0;
         }
 
-//        @Override
         public void getDescription(StringBuilder sb, int indent) {
             describeSubtree(null, sb, indent);
         }
@@ -354,7 +353,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public void describeSubtree(MyHoeffdingTree ht, StringBuilder out,
+        public void describeSubtree(EnhancedHoeffdingTree ht, StringBuilder out,
                                     int indent) {
             for (int branch = 0; branch < numChildren(); branch++) {
                 Node child = getChild(branch);
@@ -370,7 +369,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public void describeSubtreeJSON(MyHoeffdingTree ht, JSONArray parent) {
+        public void describeSubtreeJSON(EnhancedHoeffdingTree ht, JSONArray parent) {
             for (int branch = 0; branch < numChildren(); branch++) {
                 Node child = getChild(branch);
                 JSONObject node = new JSONObject();
@@ -389,10 +388,10 @@ public class MyHoeffdingTree extends AbstractClassifier {
             }
         }
 
-        private JSONObject parseSplit(MyHoeffdingTree ht, int branch) {
+        private JSONObject parseSplit(EnhancedHoeffdingTree ht, int branch) {
             JSONObject splitNode = new JSONObject();
             String[] splitString = this.splitTest.describeConditionForBranch(branch, ht.getModelContext()).split(" ");
-            String attribute = splitString[1].substring(splitString[1].indexOf(":")+1, splitString[1].indexOf("]"));
+            String attribute = splitString[1].substring(splitString[1].indexOf(":") + 1, splitString[1].indexOf("]"));
             String operator = splitString[2];
             double operand = Double.parseDouble(splitString[3]);
 
@@ -426,7 +425,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
             super(initialClassObservations);
         }
 
-        public abstract void learnFromInstance(Instance inst, MyHoeffdingTree ht);
+        public abstract void learnFromInstance(Instance inst, EnhancedHoeffdingTree ht);
     }
 
     public static class InactiveLearningNode extends LearningNode {
@@ -438,7 +437,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public void learnFromInstance(Instance inst, MyHoeffdingTree ht) {
+        public void learnFromInstance(Instance inst, EnhancedHoeffdingTree ht) {
             this.observedClassDistribution.addToValue((int) inst.classValue(),
                     inst.weight());
         }
@@ -467,7 +466,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public void learnFromInstance(Instance inst, MyHoeffdingTree ht) {
+        public void learnFromInstance(Instance inst, EnhancedHoeffdingTree ht) {
             if (this.isInitialized == false) {
                 this.attributeObservers = new AutoExpandVector<AttributeClassObserver>(inst.numAttributes());
                 this.isInitialized = true;
@@ -498,7 +497,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         public AttributeSplitSuggestion[] getBestSplitSuggestions(
-                SplitCriterion criterion, MyHoeffdingTree ht) {
+                SplitCriterion criterion, EnhancedHoeffdingTree ht) {
             List<AttributeSplitSuggestion> bestSuggestions = new LinkedList<AttributeSplitSuggestion>();
             double[] preSplitDist = this.observedClassDistribution.getArrayCopy();
             if (!ht.noPrePruneOption.isSet()) {
@@ -527,23 +526,23 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
     }
 
-    protected Node treeRoot;
+    private Node treeRoot;
 
-    protected int decisionNodeCount;
+    private int decisionNodeCount;
 
-    protected int activeLeafNodeCount;
+    private int activeLeafNodeCount;
 
-    protected int inactiveLeafNodeCount;
+    private int inactiveLeafNodeCount;
 
-    protected double inactiveLeafByteSizeEstimate;
+    private double inactiveLeafByteSizeEstimate;
 
-    protected double activeLeafByteSizeEstimate;
+    private double activeLeafByteSizeEstimate;
 
-    protected double byteSizeEstimateOverheadFraction;
+    private double byteSizeEstimateOverheadFraction;
 
-    protected boolean growthAllowed;
+    private boolean growthAllowed;
 
-    public int calcByteSize() {
+    private int calcByteSize() {
         int size = (int) SizeOf.sizeOf(this);
         if (this.treeRoot != null) {
             size += this.treeRoot.calcByteSizeIncludingSubtree();
@@ -579,11 +578,9 @@ public class MyHoeffdingTree extends AbstractClassifier {
             JSONArray rootChildren = new JSONArray();
             root.put("className", "root");
             root.put("children", rootChildren);
-
             getModelDescriptionJSON(rootChildren);
             this.fileWriter.println(root.toJSONString() + ",");
         }
-
 
         if (this.treeRoot == null) {
             this.treeRoot = newLearningNode();
@@ -937,7 +934,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public double[] getClassVotes(Instance inst, MyHoeffdingTree ht) {
+        public double[] getClassVotes(Instance inst, EnhancedHoeffdingTree ht) {
             if (getWeightSeen() >= ht.nbThresholdOption.getValue()) {
                 return NaiveBayes.doNaiveBayesPrediction(inst,
                         this.observedClassDistribution,
@@ -965,7 +962,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public void learnFromInstance(Instance inst, MyHoeffdingTree ht) {
+        public void learnFromInstance(Instance inst, EnhancedHoeffdingTree ht) {
             int trueClass = (int) inst.classValue();
             if (this.observedClassDistribution.maxIndex() == trueClass) {
                 this.mcCorrectWeight += inst.weight();
@@ -978,7 +975,7 @@ public class MyHoeffdingTree extends AbstractClassifier {
         }
 
         @Override
-        public double[] getClassVotes(Instance inst, MyHoeffdingTree ht) {
+        public double[] getClassVotes(Instance inst, EnhancedHoeffdingTree ht) {
             if (this.mcCorrectWeight > this.nbCorrectWeight) {
                 return this.observedClassDistribution.getArrayCopy();
             }
