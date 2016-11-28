@@ -1,5 +1,6 @@
 import com.github.javacliparser.IntOption;
 import moa.classifiers.Classifier;
+import moa.classifiers.trees.HoeffdingAdaptiveTree;
 import moa.core.TimingUtils;
 import moa.streams.generators.RandomRBFGenerator;
 import com.yahoo.labs.samoa.instances.Instance;
@@ -15,7 +16,7 @@ public class App {
         System.out.println("Running experiment");
 
         Experiment exp = new Experiment();
-        exp.run(1501, true);
+        exp.run(15001, true);
     }
 
     private static class Experiment {
@@ -35,7 +36,8 @@ public class App {
         }
 
         public void run(int numInstances, boolean isTesting) {
-            Classifier learner = new EnhancedHoeffdingTree(this.fileWriter, numInstances/1000);
+//            Classifier learner = new EnhancedHoeffdingTree(this.fileWriter, numInstances/1000);
+            Classifier learner = new HoeffdingAdaptiveTree();
             RandomRBFGenerator stream = new RandomRBFGenerator();
             stream.numClassesOption = new IntOption("numClasses", 'c',
                     "The number of classes to generate.", 3, 3, Integer.MAX_VALUE);
