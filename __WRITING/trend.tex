@@ -1,6 +1,8 @@
-\chapter{Metóda pre detekciu trendov v prúde udalostí}
-\label{Metóda pre detekciu trendov v prúde udalostí}
-Navrhujeme metódu detekovanie trendov v prúde udalostí s polo-automatickým výberom vhodnej metódy. Našim cieľom je odbremeniť doménového experta od náročného výberu správnej metódy pre detekciu trendu v prúde. Mohli by sme sa zamerať na detekciu trendov v doménovo špecifickej oblasti, ale tento problém je z veľkej miery preskúmaný. Preto sa zameriavame na rôzne domény, či ide o senzorové syntetické dáta, dáta z energetickej alebo počítačovej siete, či používateľmi vytváraný obsah na sociálnych sietiach a mikro-blogových službách. Cieľom je teda: použiteľnosť a jednoduchosť nami navrhovanej metódy pre doménového experta bez nutnosti detailnej znalosti o fungovaní metódy a modelu, ktoré vytvára.
+\chapter{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+\label{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+% TODO: Uvod
+
+
 Teda, kladieme nasledujúce hypotézy:
 \begin{hypothesis}{Naše riešenie detekuje trendy v prúde dát s istou pravdepodobnosťou použitím polo-automatického výberu vhodnej metódy pre detekciu trendov a zároveň poskytuje výsledky v reálnom čase}
 \end{hypothesis}
@@ -23,4 +25,4 @@ V situácií keď potrebuje doménovy expert analyzovať trend v dátach reálne
 \end{enumerate}
 \myFigure{images/DP_PeWe_method-propose}{Schematický návrh metódy pre semi-automatickú analýzu trendov.}{method-proposal}{0.45}{h!}\label{fig:method-proposal}
 
-Najväčšiu pozornosť bude treba venovať kroku 1. a 3., pretože výber správnej metódy závisí od povahy a typu dát. Evaluácia modelu je náročná úloha a rôzne metriky nemusia dávať vždy správne výsledky pri rôznych analytických metódach. V neposlednej rade vizualizácia výsledkov má byť jednoduchá na pochopenie pre používateľa, čo predstavuje výzvu v jednoduchosti, no zároveň výpovednej sile vizualizácie.
+
