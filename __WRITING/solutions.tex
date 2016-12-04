@@ -148,53 +148,45 @@ Hill et al. navrhli v \citep{hill2007real} dve stratégie pre detekovanie anomá
 \section{Zhlukovanie}
 
 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                Klasifikácia                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Klasifikácia}
+%TODO: Uvod podkapitoly
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                Zhlukovanie                    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Evaluácia}
-
-
-
-
-
-\section{Detekcia trendov}
-Detekcia trendov predstavuje kritickú úlohu pre analytikov. Reagovať na vzniknutý trend v čase jeho vzniku môže mať kritické dopady na fungovanie spoločnosti. Preto existuje záujem detekovať trendy v čase ich vzniku a byť schopný adekvátne reagovat príslušnými akciami v reálnom čase. Ak hovoríme o trendoch v obsahu, ktorý je generovaný používateľmi, napríklad na sociálnej sieti, potom sú trendy typicky poháňané udalosťami, ktoré náhle vznikajú a používatelia javia o ne záujem \citep{mathioudakis2010twittermonitor}. Mathioudakis and Koudas navrhli a implementovali metódu na detekciu trendov na sociálnej sieti Twitter\footnote{https://twitter.com/}. Metóda vykonáva detekciu trendov a ich následnú dodatočnú analýzu. Detekcia trendu pozostáva z dvoch krokov:
-\begin{enumerate}
-	\item \textit{detekcia nárazových kľúčových slov} identifikuje keď sa kľúčove slovo $K$ začne vyskytovať v prúde s neobvykle vysokým podielom v prúde. Napríklad náhly nárast frekvencie kľúčového slova \textit{NBA} môže byť spojený s prebiehajúcim dôležitým zápasom NBA. Pre detekciu nárazových kľúčových slov navrhli \citep{mathioudakis2010twittermonitor} nový algoritmus  \textit{QueueBurst} s nasledujúcimi charakteristikami:
-		\begin{enumerate}
-			\item \textit{jeden prechod} (angl. one-pass). Keďže ide o prúdové spracovanie, dáta môžu byť prečítané iba raz.
-			\item \textit{spracovanie v reálnom čase}. Identifikácia nárazových kľúčových slov je vykonávané tak ako dáta vznikajú.
-			\item \textit{odolnosť voči falošným nárazovým kľúčovým slovám}. Niekedy sa stane, že kľúčové slovo začne nárazovo prúdiť, ale nemusí predstavovať prúd, môže sa vyskytnúť zhodou okolností.
-			\item \textit{odolnosť voči spam-u}. Existuje veľa automatických botov a používateľov, ktorí generujú spamujúce správy. Spam by mohol značne znížiť presnosť detekcie trendu.
-		\end{enumerate}		
-	\item \textit{zoskupovanie nárazových kľúrových slov} po tom čo algoritmus \textit{QueueBurst} identifikuje $\displaystyle K_t$ kľúčových slov pre každý časový moment $t$, sú kľúčové slová $\displaystyle k \in K_t$ periodicky zoskupované do nesúvislých (angl. disjoint) podmnožín $\displaystyle K_t^i \in K_t$. Potom identifikovaný trend predstavuje podmnožina $\displaystyle K_t^i$. Zoskupovanie vykonáva algoritmus \textit{GroupBurst}, ktorý posuďuje spoločný výskyt v posledných správach. Algoritmus je realizovaný lačnou stratégiou.
-	\item Posledným krokom je analýza identifikovaného trendu $\displaystyle K_t^i$. Prvým krokom je identifikovať ďalšie kľúčové slová, ktoré sa spájajú s trendom $\displaystyle K_t^i$. Toto je dosiahnuté algoritmami na extrakciu kontextu, ktoré sú spustené na nedávnej histórií správ. Algoritmus vráti kľúčové slová, ktoré najviac korelujú s identifikovaným trendom $\displaystyle K_t^i$. Navyše, trendy na sociálnej sieti často pozostávajú z komentárov na aktuálne správy a novinky vo svete (napr. nytimes.com). Preto má zmysel ďalej extrahovať aj príslušné hypertextové odkazy a prideliť ich k trendu $\displaystyle K_t^i$. Posledný krok tejto metódy je zobrazenie priebehu identifikovaného trendu pomocou vizualizácie pre používateľa.
-\end{enumerate}
-\section{Rozpoznanie pocitu a nálady z používateľom generovaného obsahu}
-Analýza pocitu alebo nálady (angl. sentiment analysis) može byť chápaný ako problém klasifikácie. Úlohoou je to klasifikovať správy (najčastejšie v kontexte sociálnych sietí) do dvoch kategórií na zákalde ich pozitívnych alebo negatívnych dojmov. Ak by sme pracovali s dátami zo sociálnej siete Twitter, je možné použiť na označkovanie správ. pomerne dobre, extrahovaním emotikonov, ktoré vyjadrujú pocity používateľa \citep{bifet2010sentiment}.  \par
-Bifet and Frank publikovali v práci \citep{bifet2010sentiment} tri metódy a ich overenie na rozpoznanie nálady a pocitov z používateľom generovaného obsahu na sociálnej sieti Twitter. Experimentovali s tromi inkrementálnymi metódami, ktoré sú vhodné na spracovanie prúdu dát.
-
+%TODO: refaktorovat
 \paragraph{Multinomiálny Naive Bayes} je klasifikátor najčastejšie používaný na klasifikáciu dokumentov, ktorý obvykle poskytuje dobré výsledky aj čo sa týka presnosti výsledku aj rýchlosti. Túto metódu je jednoduché aplikovať v kontexte prúdu dát \citep{bifet2010sentiment}. Multinomiálny naivný Bayes sa pozerá na dokument ako na zhluk slov. Pre každú triedu $c$, $P(w|c)$, pravdepodobnosť, že slovo $w$ patrí do tejto triedy je odhadovaná z trénovacích dát jednoducho vypočítaním relatívnej početnosti každého slova v trénovacej sade pre danú triedu. Klasifikátor potrebuje naviac nepodmienenú pravdepodobnosť $P(c)$. Za predpokladu, že $\displaystyle n_{wd}$ je počet výskytov slova $w$ v dokumente $d$, pravdepodobnosť triedy $c$ z testovacieho dokumentu je nasledovaná: \newline
 \begin{align*}
 P(c|d) = \frac{P(c)\prod _{w \in d} P(w|c)^{n_{wd}}} {P(d)}
 \end{align*}
 Kde $P(d)$ je normalizačný faktor. Aby sme sa vyhli problému kedy sa trieda nevyskytuje v datasete ani jeden krát, je bežné použitie Laplacovej korekcie a nahradenie nulových početností jednotkou, resp. inicializovať početnosť každej triedy na 1 namiesto 0.
 
+% SGD
 \paragraph{Stochastický gradientný zostup} (angl. Stochastic Gradient Descent, SGD). Bifet and Frank v ich práci použili implementáciu tzv. vanilla stochastický gradientný zostup s pevnou rýchlosťou učenia, optimalizujúc stratu s $L_2$ penalizáciou. $L_2$ penalizácia je často používaná pri podporných vektorových strojoch (angl. support vektor machines). Lineárny stroj, ktorý je často aplikovaný na problémy klasifikácie dokumentov, optimalizujeme funkciu straty nasledovne:
 \begin{align*}
 \frac{\lambda }{2}\left \| w \right \|^{2}+\sum [1-(yxw + b)]_{+}
 \end{align*}
 kde $w$ je váhovaný vektor, $b$ je sklon, $\lambda$ regulačný parameter a označenie triedy $y$ je z intervalu $\{+1, -1\}$.
 
+% HFDT
+% TODO: znacne rozsirit, pridat VFDT, CVFDT, AVFDT
 \paragraph{Hoeffdingov strom} (angl. Hoeffding tree) je najznámejšia implementácia rozhodovacích stromov v použití prúdového spracovania. Hoeffdingov algoritmus implementuje stratégiu pred-prerezávania, ktorá je založená na Hoeffdingovom ohraničení. Toto umožňuje inkrementálne budovanie rozhodovacieho stromu. Uzol stromu je rozvinutý hneď ako obsahuje dostatočne silnú štatistickú informáciu. Existujú ďalšie sofistikované implementácie Hoeffdingových stromov, ktoré implementujú rýchlejšie a efektívnejšie algoritmy, napr. VFDT - Very Fast Decision Trees \citep{domingos2000mining} alebo CVFDT - Concept adapting Very Fast Decision Trees \citep{hulten2001mining}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  Evaluacia                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluácia}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                Zhodnotenie                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Zhodnotenie}
-Existuje mnoho úloh, ktoré potrebujú často riešiť doménový experti. Pre tieto úlohy existujú celé sady algoritmov a metód, ktoré boli navrhnuté všeobecne alebo pre špecifickú doménu. Zaoberať sa všetkými úlohami pri spracovaní prúdu údajov je mimo rozsahu tejto práce a tiež rozobrať každú metódu pre analytickú úlohu.  \par
-V tejto kapitole sme zhrnuli najčastejšie úlohy, s ktorými sa stretávajú doménovy experti a vybrané metódy na ich riešenie. Opísané metódy sú doménovo špecifické a nie sú použiteľné univerzálne pre každú doménu typu dát genericky.
+%TODO:
