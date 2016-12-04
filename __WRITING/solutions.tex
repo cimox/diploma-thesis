@@ -1,4 +1,4 @@
-\chapter{Analytické úlohy v prúde dát}
+\chapter{Analytické úlohy nad prúdom dát}
 \label{Analytické úlohy v prúde dát}
 Spracovanie, analýza a dolovanie dát predstavuje vo všeobecnosti výzvu. Zvláštnu pozornosť si tieto úlohy vyžadujú pri spracovaní, analýze a dolovaní z prúdu prúdu udalostí. Prúd udalostí je často nazývaný \textit{prúd dát} alebo \textit{údajov}, či len skrátene \textit{prúd}. V tomto texte budeme pre jednoduchosť používať najmä termín \textit{prúd} a \textit{prúd dát} \citep{tran2014change}. Avšak môžu sa vyskytnúť aj terminý ako \textit{prúd udalostí}, \textit{sekvencia udalostí, či elementov}, pričom všetky termíny majú v tomto texte \textit{rovnaký} význam.\\
 \begin{definition}{Prúd je potenciálne nekonečná sekvencia elementov \citep{tran2014change}.}
@@ -28,7 +28,20 @@ Analýza a spracovanie prúdov dát pridáva viaceré otvorené výzvy a možnos
 %         Dopytovanie sa v prúdoch dát          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Dopyty nad prúdom dát}
-text
+Vyhodnocovaniu dopytov nad statickou kolekciou dát bola venovaná značná pozornosť, ak však hovoríme o prúdoch dát dopyty musia byt vyhodnocované kontinuálne \citep{babu2001continuous, babcock2002models}. Vzniká teda nová paradigma pre interakciu s dynamicky sa meniacimi dátami, ktorú nazývame kontinuálne dopyty (angl. continious queries) \citep{babu2001continuous}. Výsledky kontinuálnych dopytov sú produkované dynamicky v čase vzniku nových dát. Príkladom použitia takýchto dopytov je napríklad sledovanie vývoja akcií burzy. Problém môže nastať pri jednorázových dopytoch, ktoré obsahujú agregačné funkcie. Pri tradičnom spracovaní dát kde sú všetky dáta uložené ako statická kolekcia, je dopyt vykonaný nad celou kolekciou. V prípade kontinuálneho dopytu je problém získať predchádzajúce dáta za predpokladu, že dáta niesú ukladané. Môžu potom nastať dva scenáre:
+\begin{enumerate}
+	\item agregačná funkcia je prepočítaná nad kolekciou dát, za predpokladu, že boli historické dáta ukladané.
+	\item agregačná funkcia je počítaná od momentu zadanie dopytu.
+\end{enumerate}
+Kontinuálne dopytovanie do prúdu dát nesie so sebou nieľko výziev \citep{babcock2002models}:
+\begin{itemize}
+	\item \textit{Limitované pamäťové požiadavky} na algoritmy spracujúce dopyty, pretože prúd dát predstavuje potenciálne nekonečný prúd udalostí.
+	\item \textit{Približné odpovede na dopyty} sú niekedy postačujúce za predpokladu, že odpoveď je dostatočné rýchla a používateľ rozumie v akej presnosti mu bola odpoveď poskytnutá. Techniky pre redukciu dimenzionality a objemu dát zahŕňajú napríklad: histogramy, náhodné vzorkovanie, symbolické vzorkovanie apod.
+	\item \textit{Dopytovací jazyk} by mal byť podobný štandardu jazyka SQL. Jazyk SQL je známy deklaratívny jazyk, je široko používaný so zavedením štandardom, ktorý poskytuje flexibilitu a optimálnu evaluáciu dopytu a vykonanie nad prúdom, či datasetom. 
+\end{itemize}
+Výskumné práce sa tiež venovali adaptívnym kontinuálnym dopytom nad prúdmi dát. Bolo ukázané, že takýto prístup môže mať značný prínos v oblasti výkonnosti systému vďaka jeho schopnosti adaptácie na zmeny v prúde dát. Tieto vlastnosti sú dosiahnuté aplikovaním zoskupovania indexov filtrov na priebežný výber predikátov \citep{madden2002continuously}.
+Ďalší priestor na zlepšenie výkonnosti kontinuálnych dopytov nad prúdmi dát predstavujú adaptívne filtre. Pri dopytovaní sa takmer vždy vykonáva filtrovanie dát v nejakej podobe. Tento krok filtrovania je obvykle implementovaný v systéme na spracovanie dopytov. Pre zvýšenie výkonnosti dopytovania sa je preto možné tieto filtre presunúť priamo do k zdrojom dát. Ukázalo sa, že takýto prístup môže mať pozitívny dopad na výkonnosť \citep{olston2003adaptive}. Tento prístup prinesie najmä redukciu prenášaných dát výmenou za nepresnosť dát. Avšak táto technika je aplikovateľná len v prostredí, ktoré máme plne pod kontrolou a vieme zasahovať do všetkých jeho súčastí.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
