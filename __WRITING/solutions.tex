@@ -28,9 +28,26 @@ V modeli časových radov každá vzorka $a_i$ sa rovná $A[i]$ pričom vzorky p
 Pri pokladničnom modeli môžme považovať množinu $U = {1, 2, ..., n}$ za element z prúdu dát. Ak uvažujeme sekvenciu $2, 1, 2, 5$ ako príklad, potom hovoríme o pokladničnom modeli. Tento model je často používaný v praxi, napríklad v prípadoch kde sled IP adries pristupuje na Web server \citep{ikonomovska2013algorithmic, muthukrishnan2005data}.
 Model turniketu je veľmi podobný pokladničnému modelu. Rozdiel je v tom, že vzorka môže predstavovať aj zápornú hodnotu - analógia z reálneho sveta kedy niektorí ľudia prichádzajú a vychádzajú turniketom, počet ľudi sa mení (napr. na zjazdovke) \citep{ikonomovska2013algorithmic, muthukrishnan2005data}.
 
-\par
-V nasledujúcich podkapitolách sa detailne venujeme konkrétnym analytickým úloh pri spracovaní a anlýze dát. Pričom sa kladieme dôraz na prúdy dát.
+% Predspracovanie prudu dat
+\paragraph{Predspracovanie prúdu}
+Predspracovanie je azda najdôležitejším krokom v aplikáciach reálneho sveta a časovo najnáročnejšou úlohou pre každého analytika. Nakoľko dáta prichádzajú z nehomogénneho sveta, môžu byť zašumené, nekompletné, duplicitné alebo často obsahovať hodnoty, ktoré sa značne líšia od ostatných. Predspracovanie prúdiach údajov je potrebné čo najviac automatizovať. Existuje niekoľko známych metód a techník, ktoré sú používané pri predspracovaní prúdov dát:
+\begin{itemize}
+	\item \textit{Vzorkovanie}, napríklad podľa pravdepodobnostného modelu.
+	\item \textit{Zahadzovania potenciálne nepotrebných vzoriek}, ak je spracujúci proces príliš zaťažený. Tu môže nastať problém, že práve zahodená vzorka bola dôležitá (zmena v dátach).
+	\item \textit{Agregácia} údajov môže značne znížiť objem dát, ale môže spôsobiť problém pri potrebe pohľadu do minulosti.
+	\item \textit{Aproximačné algoritmy} a ich použitie má za následok podstatné zrýchlenie spracovania a analýzy prúdov za predpokladu istej chybovosti. Chybovosť je zvačsa ohraničená.
+	\item \textit{Posuvné okno}, tento prístup vznikol s potrebou analýzy definovaného časového okna z prúdiacih údajov.
+\end{itemize}
 
+% Dolovanie a extrakcia informacii
+\paragraph{Spracovanie, dolovanie a analýza informácií} 
+Problematika spracovania, dolovania a analýzy bola študovaná niekoľko dekád. Zvýšenú pozornosť začala odborná verejnosť venovať pri aplikovaní týchto úloh na prúdy dát. Týmto úlohám sa venujeme podrobne v nasledujúcich podkapitolách:
+\begin{itemize}
+	\item \textit{Klastrovanie}, existuje niekoľko výskumov, ktoré sa venovali špeciálne klastrovaniu implementovaním napríklad k-mediánu a inkrementálnych algoritmov.
+	\item \textit{Klasifikácia}, táto úloha je dlho skúmaná s použitím rôznych metód rozhodovacích stromov.
+	\item \textit{Počítanie frekvencie a opakovaní}, použitím posuvných okien a inkrementálnych algoritmov na detekciu vzorov v prúde.
+	\item \textit{Analýza časových radov použitím symbolickej} reprezentácie časových radov v prúde dát. Takáto reprezentácia nám umožňuje redukciu veľkosti prenášaných dát. Táto technika pozostáva z dvoch hlavných krokov, aproximácia po častiach a následná transformácia výsledku do diskrétnych veličín.
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,30 +161,6 @@ Hill et al. navrhli v \citep{hill2007real} dve stratégie pre detekovanie anomá
 
 
 
-
-
-%TODO: spracovat nasledujuce tri kapitoly a odstranit ich
-\section{Predspracovanie prúdu}
-Predspracovanie je azda najdôležitejším krokom v aplikáciach reálneho sveta a časovo najnáročnejšou úlohou pre každého analytika. Nakoľko dáta prichádzajú z nehomogénneho sveta, môžu byť zašumené, nekompletné, duplicitné alebo často obsahovať hodnoty, ktoré sa značne líšia od ostatných. Predspracovanie prúdiach údajov je potrebné čo najviac automatizovať. Existuje potreba pre implementovanie metód  strojového učenia, ktoré sa adaptujú v čase s meniacimi sa dátami. Avšak, tieto modely a metódy by mali byť synchronizované s prediktívnymi modelmi. Pri aplikovaní strojového učenia a prediktívnych modelov je nutnosť uvažovať historické dáta. Čím podstatne narastá zložitosť celého prístupu. Hlavné výskumné problémy rozdeľujeme do dvoch hlavých kategórií, \textit{dátovo orientované} a \textit{orientované na úlohu}. Dátovo orientované techniky používané pri spracovaní prúdiacich údajov: \newline
-\begin{itemize}
-	\item Vzorkovanie je proces výberu dátovej vzorky na spracovanie podľa pravdepodobnostného modelu. Problém pri vzorkovaní je v kontexte analýzy prúdiach dát je potenciálne nekonečný dataset, resp. nevedomosť jeho skutočnej veľkosti.
-	\item Kontrolovanie zaťaženia je proces zahadzovania niektorých, potenciálne nepotrebných vzoriek dát. Opäť tu nástava problém v kontexte prúdu. Môže nastať moment, kedy práve zahodená vzorka dát je pre aktuálnu analýzu príznačná a dôležitá.
-	\item Agregácia je proces vypočtu štatistických údajov nad prúdmi. Problém je pri veľkých tokoch v prúde, pričom je tiež potreba pohľadu do minulosti.
-\end{itemize}
-\begin{itemize}
-	\item Aproximačné algoritmy použitie aproximačných algoritmov má za následok podstatné zrýchlenie spracovania a analýzy prúdov za predpokladu istej chybovosti. Chybovosť je zvačsa ohraničená.
-	\item Posuvné okno, tento prístup vznikol s potrebou analýzy definovaného časového okna z prúdiacih údajov.
-\end{itemize}
-
-%\section{Dolovanie a extrakcia informácií} 
-Dolovanie z prúdiacih dát dnes predstavuje niekoľko výziev. Jednou z oblastí je bezpečnosť a dôvernosť v dolovaní dát. Návrh modelu môže byť navrhovaný na pôvodných dátach, ale nasadenie by malo byť realizované na anonymizovaných dátach. Identifikujeme dve hlavné výzvy pre uchovanie bezpečnosti pri dolovaní v prúdoch. Prvou je nekompletnosť informácií, informácie často prichádzajú nekompletné alebo neaktuálne. Druhá výzva nadväzuje na prvú, a to že dáta sa môžu v čase meniť a vyvýjať. Môže sa meniť štruktúra, komplexita a ich presnosť. Preto, vopred definované bezpečnostné pravidlá a politiky nemusia byť časom aktuálne a pokrývať stanovenú oblasť. Medzi známe techniky dolovania v prúdoch údajov považujeme nasledujúce:
- \par
-\begin{itemize}
-	\item Klastrovanie, existuje niekoľko výskumov, ktoré sa venovali špeciálne klastrovaniu implementovaním napríklad k-mediánu a inkrementálnych algoritmov.
-	\item Klasifikácia, opäť existuje niekoľko známych výskumov, ktoré s venujú problému klasifikácie. Napríklad použitím dát z reálneho sveta a umelých dát, pričom implementujú algoritmy, ktoré triedia dáta na základe porovnaní medzi týmito dvoma vzorkami.
-	\item Počítanie frekvencie a opakovaní, použitím posuvných okien a inkrementálnych algoritmov na detekciu vzorov v prúde.
-	\item Analýza časových radov použitím symbolickej reprezentácie časových radov v prúde dát. Takáto reprezentácia nám umožňuje redukciu veľkosti prenášaných dát. Táto technika pozostáva z dvoch hlavných krokov, aproximácia po častiach a následná transformácia výsledku do diskrétnych veličín.
-\end{itemize}
 
 
 \section{Detekcia trendov}
