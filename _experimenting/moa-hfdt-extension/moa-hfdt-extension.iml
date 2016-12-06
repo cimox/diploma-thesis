@@ -20,14 +20,5 @@
     <orderEntry type="library" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1" level="project" />
-    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.moa:moa:2016.04" level="project" />
-    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-dev:3.7.12" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a" level="project" />
-    <orderEntry type="library" name="Maven: org.pentaho.pentaho-commons:pentaho-package-manager:1.0.8" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.sizeofag:sizeofag:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.meka:meka:1.9.0" level="project" />
-    <orderEntry type="library" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1" level="project" />
   </component>
 </module>

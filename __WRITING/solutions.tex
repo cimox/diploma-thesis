@@ -30,13 +30,22 @@ Model turniketu je veľmi podobný pokladničnému modelu. Rozdiel je v tom, že
 
 % Predspracovanie prudu dat
 \paragraph{Predspracovanie prúdu}
-Predspracovanie je azda najdôležitejším krokom v aplikáciach reálneho sveta a časovo najnáročnejšou úlohou pre každého analytika. Nakoľko dáta prichádzajú z nehomogénneho sveta, môžu byť zašumené, nekompletné, duplicitné alebo často obsahovať hodnoty, ktoré sa značne líšia od ostatných. Predspracovanie prúdiach údajov je potrebné čo najviac automatizovať. Existuje niekoľko známych metód a techník, ktoré sú používané pri predspracovaní prúdov dát:
+Predspracovanie je azda najdôležitejším krokom v aplikáciach reálneho sveta a časovo najnáročnejšou úlohou pre každého analytika. Nakoľko dáta prichádzajú z nehomogénneho sveta, môžu byť zašumené, nekompletné, duplicitné alebo často obsahovať hodnoty, ktoré sa značne líšia od ostatných. Predspracovanie prúdiach údajov je potrebné čo najviac automatizovať. Existuje niekoľko známych metód a techník, ktoré sú používané pri predspracovaní prúdov dát \citep{krempl2014open, nguyen2015survey}:
 \begin{itemize}
 	\item \textit{Vzorkovanie}, napríklad podľa pravdepodobnostného modelu.
 	\item \textit{Zahadzovania potenciálne nepotrebných vzoriek}, ak je spracujúci proces príliš zaťažený. Tu môže nastať problém, že práve zahodená vzorka bola dôležitá (zmena v dátach).
 	\item \textit{Agregácia} údajov môže značne znížiť objem dát, ale môže spôsobiť problém pri potrebe pohľadu do minulosti.
 	\item \textit{Aproximačné algoritmy} a ich použitie má za následok podstatné zrýchlenie spracovania a analýzy prúdov za predpokladu istej chybovosti. Chybovosť je zvačsa ohraničená.
-	\item \textit{Posuvné okno}, tento prístup vznikol s potrebou analýzy definovaného časového okna z prúdiacih údajov.
+	\item \textit{Posuvné okno}, tento prístup vznikol s potrebou analýzy definovaného časového okna z prúdiacih údajov. Výstup je teda závislí na zvolenej veľkosti okna. Problém pri tomto prístupe je práve správne nastavenie veľkosti okna tak aby sme vedeli zohladniť zmeny v prúde dát.
+\end{itemize}
+
+\par
+Pri dolovaní z prúdov dát (angl. data stream mining) je potrebné aby algoritmy splňovali nasledujúce obmedzenia \citep{nguyen2015survey, wadewale2015survey}:
+\begin{itemize}
+	\item Jeden priechod cez dáta (angl. single-pass). Narozdiel od tradičných metód kde je možné dáta prečítať viac krát, pretože sú dáta dostupné na disku. Pri dolovaní v prúde dát nové vzorky prichádzajú kontinálne a musíme preto každú vzorku spracovať práve raz v momente keď príde.
+	\item Odpoveď v reálnom čase v zmysle, že vytvorený model je pripravený kedykoľvek (angl. anytime real-time resposne) napríklad predikovať triedy nových vzoriek.
+	\item K dispozícii máme len ohraničenú pamäť. Toto obmedzenie súvisí s povahou prúdou dát a to, že prúdy predstavujú potenciálne nekonečné zdroje dát.
+	\item Detekcia zmien (angl. concept-drift detection) je nevyhnutná v situácii keď sa v dátach objavia nové vzory, ktoré sa menia v čase.
 \end{itemize}
 
 % Dolovanie a extrakcia informacii
@@ -133,7 +142,7 @@ Hill et al. navrhli v \citep{hill2007real} dve stratégie pre detekovanie anomá
 	\item \textit{Bayesov dôveryhodný interval} (angl. Bayesian credible interval - BCI), ktorý sleduje viacrozmernú gausovskú distribúciu lineárneho stavu premennej, ktorý korešponduje s neznámym stavom systému a jej meraným náprotivkom.
 	\item \textit{Maximálne posteriori meraný status} (angl. Maximum a posteriori measurement status - MAP-ms) používa komplexnejšiu dynamickú bayseovú sieť. Princíp je rovnaký ako pri BCI, pričom MAP-ms metóda je naviac rozšírená o status (napr. anomália áno/nie), ktorý je reprezentovaný distribúciou diskrétnej premennej každého merania senzoru.
 \end{itemize}
-\myFigure{images/2_anomalie_DBN}{Štruktúra dnamickej bayseovej siete. Vektor $X$ reprezentuje spojitú zložku, neznáme alebo tiež nazývané skryté premenné systému a vektory $M$ predstavujú spojité pozorované premenné v čase $t$.}{anomalie-dbn}{0.65}{h!}\label{fig:anomalie-dbn}
+\myFigure{images/2_anomalie_DBN}{Štruktúra dnamickej bayseovej siete. Vektor $X$ reprezentuje spojitú zložku, neznáme alebo tiež nazývané skryté premenné systému a vektory $M$ predstavujú spojité pozorované premenné v čase $t$ \citep{hill2007real}.}{anomalie-dbn}{0.65}{h!}\label{fig:anomalie-dbn}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,7 +164,11 @@ Hill et al. navrhli v \citep{hill2007real} dve stratégie pre detekovanie anomá
 %                Klasifikácia                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Klasifikácia}
-%TODO: Uvod podkapitoly
+Klasifikácia je proces hľadania všeobecného modelu, ktorý je vytvorený za základe predchádzajúcich pozorovaní. Model je potom použitý na klasifikovanie nových dát. Proces klasifikácie pozostáva z dvoch krokov: \textit{učenie} a \textit{trénovanie}. Počas učenia sa snažíme podľa algoritmu vytvoriť klasifikačný model z trénovacích dát (trénovacia množina). Počas testovania je vytvorený model použitý na klasifikovanie neoznačkovaných dát z testovacej množiny. Existujú rôzne dobre známe metódy pre klasifikáciu: rozhodovacie stromy, naivný Bayes, neurónové siete alebo k-najbližších susedov \citep{nguyen2015survey}. Niektoré z týchto metód sú v upravenej podobe vhodné na klasifikáciu prúdov dát, vybrané z nich sú detailnejšie popísané v tejto podkapitole. 
+\par
+Problém klasifikácie je zvyčajne formálne definovaný nasledovne: nech $A$ je trénovacia množina o $N$ prvkoch vo forme $(x,y)$ kde $y$ predstavuje skutočnú triedu vzorky a $x$ je vektor s $d$ atribútmi. Každý atribút môže nadobúdať numerické alebo kategorické hodnoty. Cieľom je vytvoriť na základe trénovacej množiny model resp. funkciu $y=f(x)$, ktorá bude predikovať triedu $y$ pre nové vzorky $x$ s vysokou presnosťou \citep{domingos2000mining}. 
+\par
+
 
 
 %TODO: refaktorovat
