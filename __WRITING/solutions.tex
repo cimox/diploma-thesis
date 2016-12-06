@@ -178,12 +178,15 @@ P(c|d) = \frac{P(c)\prod _{w \in d} P(w|c)^{n_{wd}}} {P(d)}
 \end{align*}
 Kde $P(d)$ je normalizačný faktor. Aby sme sa vyhli problému kedy sa trieda nevyskytuje v datasete ani jeden krát, je bežné použitie Laplacovej korekcie a nahradenie nulových početností jednotkou, resp. inicializovať početnosť každej triedy na 1 namiesto 0.
 
-% SGD
-\paragraph{Stochastický gradientný zostup} (angl. Stochastic Gradient Descent, SGD). Bifet and Frank v ich práci použili implementáciu tzv. vanilla stochastický gradientný zostup s pevnou rýchlosťou učenia, optimalizujúc stratu s $L_2$ penalizáciou. $L_2$ penalizácia je často používaná pri podporných vektorových strojoch (angl. support vektor machines). Lineárny stroj, ktorý je často aplikovaný na problémy klasifikácie dokumentov, optimalizujeme funkciu straty nasledovne:
+% SGD a SVM
+\paragraph{Stochastický gradientný zostup a metóda podporných strojov} (angl. Stochastic Gradient Descent, SGD). Bifet a Frank v ich práci použili implementáciu tzv. vanilla stochastický gradientný zostup s pevnou rýchlosťou učenia, optimalizujúc stratu s $L_2$ penalizáciou. $L_2$ penalizácia je často používaná pri podporných vektorových strojoch (angl. Support Vector Machines, ďalej len SVM). Lineárny stroj, ktorý je často aplikovaný na problémy klasifikácie dokumentov, optimalizujeme funkciu straty nasledovne:
 \begin{align*}
 \frac{\lambda }{2}\left \| w \right \|^{2}+\sum [1-(yxw + b)]_{+}
 \end{align*}
 kde $w$ je váhovaný vektor, $b$ je sklon, $\lambda$ regulačný parameter a označenie triedy $y$ je z intervalu $\{+1, -1\}$.
+\par
+SVM ukazujú dobré výsledky v mnohých úlohách a problémoch strojového učenia, ak je táto metóda použitá na statické datasety. Avšak, ich použitie v neupravenej forme je problematické na prúdy dát kvoli ich časovej zložitosti $O(N^3)$ a pamäťovej zložitosti $O(N^2)$, kde $N$ je počet dátových vzoriek \citep{nguyen2015survey}. Tsang a spol. navrhli metódu jadrových vektorových strojov (angl. Core Vector Machine, CVM), ktorá používa uzavretie minimálnou guľou (angl. Minimum Enclosing Ball - MEB,v 2D priestore tiež známe ako problém pokrytia minimálnou kružicou) na redukciu časovej a pamäťovej zložitosti. Metóda StreamsSVM je rozšírením CVM a bola navrhnutá s ohľadom na spracovanie prúdov dát \citep{rai2009streamed}. StreamsSVM používa flexibilný rádius MEB, ktorý sa mení podľa nových vzoriek z prúdu dát. Výsledky sa blížia k výsledkom z optimálneho algoritmu, avšak problém tejto metódy je neschopnosť vysporiadať sa so zmenami (angl. concept-drift) v prúde dát.
+
 
 % HFDT
 % TODO: znacne rozsirit, pridat VFDT, CVFDT, AVFDT
