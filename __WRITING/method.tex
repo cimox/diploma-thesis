@@ -1,11 +1,31 @@
 \chapter{Existujúce nástroje pre analýzu prúdu udalostí}
-\label{Existujúce nástroje pre analýzu prúdu udalostí} 
+\label{Existujúce nástroje pre analýzu prúdu udalostí}
+% TODO: pridat uvod do nasledujucich nastrojov
+
 
 \section{MOA}
-Masívny online analyzátor (z angl. Massive Online Analysis - MOA, ďalej len MOA) je softvérové prostredie pre implementáciu algoritmov a vykonávanie experimentov pre online učenie sa z vyvýjajúcich sa prúdov dát \citep{DBLP:journals/jmlr/BifetHKP10}. MOA pozostáva z kolekcie offline a online metód a tiež nástrojov pre evaluáciu týchto metód. MOA implementuje metódy a algoritmy pre klasifikáciu, zhlukovanie prúdu, detekciu inštancií, ktoré sa vymykajú prahovým hodnotám a tiež odporúčacie systémy. Presnejšie MOA implementuje napríklad nasledujúce: stupňovanie (angl. boosting), vrecovanie (angl. bagging) a Hoeffdingove stromy, všetky metódy s a bez Naive Bayes klasifikátorom na listoch. MOA podporuje obojsmernú interakciu s nástrojom WEKA, ktorý je detailne opísaný v nasledujúcej kapitole. \\
-
-MOA je implementovaná v programovacom jazyku Java. Za hlavný benefit implementácie v Jave považujú autori jej platformová nezávislosť. MOA obsahuje tiež generár prúdu dát, vie dobre modelovať concept drift. V aplikácií je možné definovať pravdepodobnosť, že inštancia prúdu patrí do nového concept drift-u. Sú dostupné nasledovné generátory prúdu \citep{DBLP:journals/jmlr/BifetHKP10}: \textit{Random Tree Generator, SEA Concepts Generator, STAGGER Concepts Generator, Rotating Hyperplane, Random RBF Generator, LED Generator, Waveform Generator, and Function Generator}.
+Masívny online analyzátor (z angl. Massive Online Analysis - MOA, ďalej len MOA) je softvérové prostredie pre implementáciu algoritmov a vykonávanie experimentov pre online učenie sa z vyvýjajúcich sa prúdov dát \citep{DBLP:journals/jmlr/BifetHKP10}. MOA pozostáva z kolekcie offline a online metód a tiež nástrojov pre evaluáciu týchto metód. MOA implementuje metódy a algoritmy pre klasifikáciu, zhlukovanie prúdu, detekciu inštancií, ktoré sa vymykajú prahovým hodnotám a tiež odporúčacie systémy. Presnejšie MOA implementuje napríklad nasledujúce: stupňovanie (angl. boosting), vrecovanie (angl. bagging) a Hoeffdingove stromy, všetky metódy s a bez Naive Bayes klasifikátorom na listoch. MOA podporuje obojsmernú interakciu s nástrojom WEKA, ktorý je detailne opísaný v nasledujúcej kapitole. Na \ref{fig:moa} je možné vidieť grafické používateľské rozhranie nástroja (GUI) MOA. Okrem GUI je možné použiť konzolové a API rozhranie prostredníctvom, ktorého sa dá programovať nad rámcom/nástrojom MOA.
+\par
+MOA je implementovaná v programovacom jazyku Java. Za hlavnú výhodu implementácie v Jave považujú autori jej platformovú nezávislosť. MOA obsahuje tiež syntetický generátor prúdu dát, ktorým je možné modelovať tiež concept drift. V aplikácií je možné definovať pravdepodobnosť, že inštancia prúdu patrí do nového concept drift-u. Sú dostupné nasledovné generátory prúdu \citep{DBLP:journals/jmlr/BifetHKP10}: \textit{Random Tree Generator, SEA Concepts Generator, STAGGER Concepts Generator, Rotating Hyperplane, Random RBF Generator, LED Generator, Waveform Generator, and Function Generator}.
 \myFigure{images/3_moa}{Hlavná obrazovka GUI nástroja MOA.}{moa}{0.45}{h!}\label{fig:moa}
+\par
+Evaluácia modelu je dôležitou súčasťou dolovania a analýzy dát. MOA implementuje niekoľko state-of-the-art metód pre evaluáciu modelov vytvorených príslušným algoritmom. Je možné argumentovať, že nasledujúce metódy nie sú najvhodnejšie pre evaluáciu. Toto tvrdenie je akceptovateľné, pretože evaluácia algoritmov pre dolovanie a analýzu prúdov dát je samostatná výskumna oblasť, ktorá sa ešte len vyvíja. Implementované metódy v MOA pre evaluáciu sú:
+\begin{itemize}
+	\item \textit{Holdout} je vhodné použiť, pretože krížová validácia môže byť často príliš časovo náročná kvôli objemu dát. Namiesto toho je použítá jediná holdout množina na vyhodnotenie kvality modelu.
+	\item \textit{Prerušované testovanie-potom-trénovanie} (angl. Interleaved Test-Then-Train alebo tiež Prequential) funguje tak, že každá nová vzorka sa najprv použije na testovanie a následne na trénovanie. Vďaka tomu môže byť presnosť modelu inkrementálne aktualizovaná. Výhoda je, že nie je potrebné udržiavať holdout množinu v pamäti. 
+\end{itemize}
+\par
+Pre spustenie grafického používateľského rozhrania nástroja MOA je potrebné stiahnuť nástroj\footnote{http://moa.cms.waikato.ac.nz/downloads/} a v príkazovom riadku spustiť nasledujúci príkaz:
+\begin{lstlisting}
+java -Xmx4G -cp moa.jar -javaagent:sizeofag.jar moa.gui.GUI
+\end{lstlisting}
+Používanie MOA z príkazového riadku:
+\begin{lstlisting}
+java -cp moa.jar -javaagent:sizeofag.jar moa.DoTask \  "EvaluatePeriodicHeldOutTest -l \
+	(OzaBag -l trees.HoeffdingTree -s 10)\  -s generators.WaveformGenerator \  -n 100000 -i 100000000 -f 1000000" > htresult.csv
+\end{lstlisting}
+
+
 
 \section{WEKA}
 The Wakaito Enviroment for Knowledge Analysis (ďalej len Weka) vznikol s jednoduchým cieľom poskytunúť výskumníkom unifikovanú platformu pre prístup k state-of-the-art technikám strojového učenia sa \citep{hall2009weka}. Weka vznikla na University of Waikato na Novom Zélande v roku 1992, pričom je aktívne vyvýjaná posledných 16 rokov. Weka poskytuje kolekciu algoritmov strojového učenia sa pre úlohy dolovania v dátach. Algoritmy môžu byť priamo aplikované na datasety prostredníctvom aplikácie alebo pouťžité vo vlastných aplikáciach volaním Java kódu. Weka obsahuje tieť nástroje na predspracovanie dát, klasifikáciu, regresiu, zhlukovanie, asociačné pravidlá a vizualizáciu. Nástroj je tieť vhodný pre návrhovanie a vývoj nových schém pre strojové učenia sa v kontexte dolovania dát. Zaujímavosťou je tiež, že Weka je nelietajúci vták, ktorý žije len na ostrove Nového Zélandu. \\
