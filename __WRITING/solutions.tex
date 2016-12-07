@@ -58,6 +58,8 @@ Problematika spracovania, dolovania a analýzy v statickej kolekcii dát bola š
 	\item \textit{Analýza časových radov použitím symbolickej} reprezentácie časových radov v prúde dát. Takáto reprezentácia nám umožňuje redukciu veľkosti prenášaných dát. Táto technika pozostáva z dvoch hlavných krokov, aproximácia po častiach a následná transformácia výsledku do diskrétnych veličín.
 \end{itemize}
 
+%TODO: pridat CRISP
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %         Dopytovanie sa v prúdoch dát          %
@@ -155,17 +157,34 @@ Hill et al. navrhli v \citep{hill2007real} dve stratégie pre detekovanie anomá
 %                Zhlukovanie                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Zhlukovanie}
-Zhlukovanie (angl. clustering) je proces zoskupovania alebo segmentácie objektov z dátovej množiny do zhlukov (angl. cluster) na základe čŕt objektov. Cieľom je vytvoriť zhluky, kde vrámci zhluku budú objekty čo najviac podobné a objekty medzi zhlukmi čo najviac odlišné. Podobne ako pri tradičných metódach pre zhlukovanie, aj metódy pre prúdy dát môžu byť rozdelené do piatich kategórií \citep{nguyen2015survey, aggarwal2014survey}: rozdeľovacie (angl. partitioning) metódy, hierarchické (angl. hierarchical) metódy, metódy založené na hustote (angl. density-based), metódy založené na mriežke (angl. grid-based) a metódy založené na modely (angl. model-based). Algoritmus potrebuje naviac kvantifikovať mieru podobnosti, či vzdialenosti zhlukov. existujú štyri najpoužívanejšie miery pre meranie vzdialenosti: minimálna vzdialenosť (angl. single-linkage), maximálna vzdialenosť (angl. complete-linkage), primerná a stredná vzdialenosť.
+Zhlukovanie (angl. clustering) je proces zoskupovania alebo segmentácie objektov z dátovej množiny do zhlukov (angl. cluster) na základe čŕt objektov. Cieľom je vytvoriť zhluky, kde vrámci zhluku budú objekty čo najviac podobné a objekty medzi zhlukmi čo najviac odlišné. Podobne ako pri tradičných metódach pre zhlukovanie, aj metódy pre prúdy dát môžu byť rozdelené do piatich kategórií \citep{nguyen2015survey, aggarwal2014survey}: rozdeľovacie (angl. partitioning) metódy, hierarchické (angl. hierarchical) metódy, metódy založené na hustote (angl. density-based), metódy založené na mriežke (angl. grid-based) a metódy založené na modely (angl. model-based). Algoritmus potrebuje naviac kvantifikovať mieru podobnosti, či vzdialenosti zhlukov. existujú štyri najpoužívanejšie miery pre meranie vzdialenosti: minimálna vzdialenosť (angl. single-linkage), maximálna vzdialenosť (angl. complete-linkage), primerná a stredná vzdialenosť. Zhlukovanie je príklad \textit{učenia bez učiteľa} (angl. unsupervised learning) narozdiel od klasifikácie. Metódy zhlukovania sú často používane počas predspracovania dát napríklad s cieľom redukcie dimenzionality.
 
-\paragraph{Rozdeľovacie metódy}
+\paragraph{Rozdeľovacie metódy} (angl. partitioning methods) rozdeľujú dátovú množinu o $n$ objektoch do $k$ partícií kde každá partícia predstavuje zhluk, pričom platí $k\leq n$. Parameter $k$ je obvykle definovaný používateľom vopred. Najznámejšie tradičné metódy sú $k-means$ a $k-medians$. Existujú implementácie, ktoré upravujú $k-means$ tak aby bola použiteľná na prúdy dát. Všetky tieto implementácie spracujú prúd v malých dávkach, takže nie celkom spôsobom ako je vhodné spracovať prúdy dát \citep{gaber2005mining}.
+\par
+Jeden z prvých algoritmov, ktoré boli navrhnuté pre prúdy dát je $STREAM$, algoritmus je rozšírením algoritmu $k-medians$. Algoritmus používa techniku rozdeľuj a panuj (angl. divide-and-conquer) s cieľom vytvárania zhlukov inkrementálne. Účelová funkcia algoritmu $STREAM$ je nasledovná:
+\begin{align*}
+SSQ(M,C) = \sum_{i=1}^{k} \sum_{x_j\Leftarrow c_i} dist(x_j, c_i)
+\end{align*}
+kde $x$ je dátová vzorka a $c$ reprezentuje zhluk (medián). Funkcia $dist$ je funkcia na meranie vzdialenosti medzi zhlukmi. Algoritmus avšak tiež spracováva dáta v malých dávkach. Na rozhodnutie o veľkosti dávky používa algoritmus $LOCALSEARCH$.
 
+\paragraph{Metódy založené na hustote} vytvárajú profil hustoty dátovej množiny. Tento profil je následne použitý na zhlukovanie. Znamená to teda, že za zhluky považujeme miesta v priestore s vysokou hustotou objektov. Výhodou tejto metódy je, že dokáže objaviť v dátach aj neobvyklé tvary zhlukov. Najznámejšie implementácie sú $DBSCAN$ a $OPTICS$. Toto je všeobecná výhoda metód založených na hustote v porovnaní s rozdeľovacími metódami \citep{han2011data}.
+\par
+Algoritmus $DenStream$ je rozšírením algoritmu $DBSCAN$, ktorý je vhodný pre zhlukovanie prúdov dát. Tento algoritmus podobne ako $CluStream$ algoritmus navrhnutý Aggarwalom vytvára mikro zhluky na zachytenie informácie o prúde dát. Mikro zhluky sú kontinálne aktualizované a udržiavané v kolekcii mikro zhlukov. Algoritmus používa oslabujúci model na zníženie váh elementov v čase. Vytvárané sú tri typy mikro zhlukov: základný, potenciálny a vyčnievajúci (angl. outlier). Algoritmus potom aplikuje známy $DBSCAN$ algoritmus na vytvorené mikro zhluky, pričom zhluk vzniká z viacerých mikro zhlukov, ktoré su pokope \citep{nguyen2015survey}.
+\par
+Algoritmus $OPTICS-stream$ je opäť rozšírenie algoritmu $OPTICS$. Podobne ako $DenStream$ vytvára mikro zhluky a aplikuje oslabujúci model. Na vytvorenie finálnych zhlukov rovnako používa pôvodný algoritmus $OPTICS$ z vytvorených mikro zhlukov.
+
+\paragraph{Metódy založené na modeloch} sa snažia optimalizovať podobnosť medzi dátami a statickými modelmi. Známe tradičné metódy sú napríklad $Expectation-Maximization (EM)$ a $Self-Organizing Map (SOM)$. EM je jemná (angl. soft) metóda pre zhlukovanie, SOM je metóda neurónových sietí.
+\par
+$SWEM$ je algoritmus rozšírený z EM algoritmu. Tento algoritmus používa posuvné okno. Každý mikro komponent je reprezentovaný n-ticou (váha, priemer, kovariančná matica). Najprv je aplikovaný algoritmus EM na získanie konvergujúcich parametrov, následne používa získané parametre ako inicializačné hodnoty pre vytvorenie modelu. SWEM tiež aplikuje oslabujúci model na expiráciu sumarizačných štatistík mikro komponentov \citep{nguyen2015survey}.
+\par
+Ďalším algoritmom, ktorý vytvára statický model je $GCPSOM$, ktorý je hybridným algoritmom vytvorený z $GSOM$ a $CPSOM$. Algoritmus GSOM je vyvíjajúci sa SOM kde nieje potrebné vopred definovať veľkosť mapy. Mapa GSOM dynamicky rastie podľa hodnoty akumulovaných chýb. CPSOM je bunkový pravdepodobnostný SOM, ktorý používa oslabujúce okno s cieľom redukcie váh neurónov. Teda, GCPSOM má schopnosť dynamického rastu mapy čŕt pre zhlukovanie prúdov dát a udržiavať zhluky tak ako sa prúd vyvíja v čase \citep{nguyen2015survey}.
+
+% TODO: doplnit zhlukovacie metody
 \paragraph{Hierarchické metódy}
-
-\paragraph{Metódy založené na hustote}
 
 \paragraph{Metódy založené na mriežke}
 
-\paragraph{Metódy založené na modely}
+
 
 
 
@@ -178,9 +197,8 @@ Klasifikácia je proces hľadania všeobecného modelu, ktorý je vytvorený za 
 \par
 Problém klasifikácie je zvyčajne formálne definovaný nasledovne: nech $A$ je trénovacia množina o $N$ prvkoch vo forme $(x,y)$ kde $y$ predstavuje skutočnú triedu vzorky a $x$ je vektor s $d$ atribútmi. Každý atribút môže nadobúdať numerické alebo kategorické hodnoty. Cieľom je vytvoriť na základe trénovacej množiny model resp. funkciu $y=f(x)$, ktorá bude predikovať triedu $y$ pre nové vzorky $x$ s vysokou presnosťou \citep{domingos2000mining}. 
 \par
-Väčšsina klasifikačných metód používa vzorkovanie s cieľom zvýšiť presnoť klasifikátora \citep{aggarwal2014survey, nguyen2015survey}. Často je použitá technika zásobníkového vzorkovania (angl. Reservoir sampling), ktorá umožňuje zvýšiť efektivitu klasifikátora. Myšlienka je v udržiavaní malej kontinuálnej trénovacej vzorke dát. Klasifikačný algoritmus je potom kedykoľvek aplikovaný na vzorku s cieľom vytvorenia modelu \citep{aggarwal2014survey}.
+Väčšsina klasifikačných metód používa vzorkovanie s cieľom zvýšiť presnoť klasifikátora \citep{aggarwal2014survey, nguyen2015survey}. Často je použitá technika zásobníkového vzorkovania (angl. Reservoir sampling), ktorá umožňuje zvýšiť efektivitu klasifikátora. Myšlienka je v udržiavaní malej kontinuálnej trénovacej vzorke dát. Klasifikačný algoritmus je potom kedykoľvek aplikovaný na vzorku s cieľom vytvorenia modelu \citep{aggarwal2014survey}. Klasifikácia je problém \textit{učenia s učiteľom} (angl. supervised learning) čo znamená, že pri trénovaní sú známe skutočné triedy dátových vzoriek.
 
-%TODO: refaktorovat
 % Multi naive bayes
 \paragraph{Multinomiálny naivný Bayes} je klasifikátor najčastejšie používaný na klasifikáciu dokumentov, ktorý obvykle poskytuje dobré výsledky aj čo sa týka presnosti výsledku aj rýchlosti. Túto metódu je jednoduché aplikovať v kontexte prúdu dát \citep{bifet2010sentiment}. Multinomiálny naivný Bayes sa pozerá na dokument ako na zhluk slov. Pre každú triedu $c$, $P(w|c)$, pravdepodobnosť, že slovo $w$ patrí do tejto triedy je odhadovaná z trénovacích dát jednoducho vypočítaním relatívnej početnosti každého slova v trénovacej sade pre danú triedu. Klasifikátor potrebuje naviac nepodmienenú pravdepodobnosť $P(c)$. Za predpokladu, že $\displaystyle n_{wd}$ je počet výskytov slova $w$ v dokumente $d$, pravdepodobnosť triedy $c$ z testovacieho dokumentu je nasledovaná: \newline
 \begin{align*}
@@ -199,7 +217,6 @@ SVM ukazujú dobré výsledky v mnohých úlohách a problémoch strojového uč
 
 
 % HFDT, VFDT, CVFDT
-% TODO: znacne rozsirit, pridat VFDT, CVFDT, AVFDT
 \paragraph{Rozhodovacie stromy} (angl. Decision trees) sú častou metódou používanou na klasikáciu. Modely rozhodovacích stromov dosahujú v praxi vysokú presnosť zatiaľ čo model je jednoduchý na vysvetlenie \citep{jin2003efficient, hulten2001mining, domingos2000mining, aggarwal2014survey}. Existuje niekoľko škálovateľných metód pre rozhodovacie stromy, napríklad SLIQ, RainForest alebo BOAT \citep{aggarwal2014survey}. Napriek tomu, že sú tieto metódy škálovateľné, nie sú navrhnuté a ani vhodné na použitie pre prúdy dát. Neskôr boli navrhnuté rodiny algoritmov ako ID3, ktoré boli síce navrhnuté aj s ohľadom na prúdy dát, ale problém je že neboli tak aby  zohľadnili zmeny v modely. Rozhodovacie stromy predikujú resp. klasifikujú novú vzorku do triedy $y$ podľa výsledkov testov v rozhodovacích uzloch a triedy v liste stromu do ktorého spadne vzorka.
 \par
 Jedna z prvých state-of-the-art metód, ktorá bola navrhnutá špecificky pre prúdy dát je \textit{Hoeffdingov strom} (angl. Hoeffding tree, ďalej len HT).  Je to najznámejšia implementácia rozhodovacích stromov v použití prúdového spracovania \citep{domingos2000mining, aggarwal2014survey, nguyen2015survey}. HT vyžaduje prečítanie každej novej vzorky z prúdu najviac jeden krát. Táto vlastnosť umožňuje použitie HT nad prúdmi dát s akceptovateľnou časovou a pamäťovou zložitosťou. Prečítané vzorky nieje potrebné ukladať na disk. HT využíva fakt, že malá vzorka dát je často postačujúca na výber optimálneho rozdelovacieho atribútu. Toto tvrdenie je matematicky podporené Hoeffdingovou mierou alebo súčtovou Chernoffovou mierou \citep{domingos2000mining, han2011data}. Rutkowski a spol. tvrdia, že stromy, ktoré používaju Hoeffdingovu mieru v skutočnosti používajú McDiarmidovu mieru a mali by sa tieto stromy nazývať McDiarmdove \citep{rutkowski2013decision}. HT dosahujú sa vo všeobecnosti asymptoticky približujú kvalitou k tým, ktoré sú vytvorené metódou pre dávkové spracovanie \citep{hall2009weka}.
@@ -209,7 +226,7 @@ Predpokladajme $N$ nezávislých pozorovaní náhodnej premennej $r \in R$ kde $
 \epsilon = \sqrt{ \frac{R^2ln(1/\delta)} {2n} }
 \end{align*}
 HT algoritmus používa Hoeffdingovu mieru na výber najmenšieho čísla $N$ - počet vzoriek potrebných v uzle na výber rozdeľovacieho atribútu. Presnejšie, v každom uzle stromu maximalizujeme $G(A_j)$ kde funkcia G predstavuje metriku kvality atribútu $A_j$ vzorky, napríklad informačný zisk. Cieľom je nájsť najmeší počet vzoriek $N$ tak aby bola splnená Hoeffdingova miera. Nech $G(A_a)$ predstavuje atribút s najvyššou hodnotou $G$ a nech $G(A_b)$ je druhý najlepší atribút. Potom ak $G(A_a) - G(A_b) > \epsilon$ môžme s istotou tvrdiť, že rozdiel je väčší ako nula. Následne vyberieme $A_a$ ako najlepší rozdeľovací atribút v danom uzle s istotu $1-\delta$. Jediné dáta, ktoré si potrebuje HT algoritmus ukladať sú postačujúce štatistiky potrebné pre rozhodovanie a výpočet Hoeffdingovej miery, sú to počítadlá $n_ijk$ pre hodnotu $v_j$ atribútu $A_i$ z triedy $y_k$. Slabá stránka tohto algoritmu je v tom, že očakáva na vstupe prúd, ktorý neobsahuje zmeny (angl. concept-drift \citep{domingos2000mining}.
-\par %TODO: prida HFDT pseudokod
+\par %TODO: pridat HFDT pseudokod
 Existuje niekoľko modifikácií HT algoritmu. Tá najzákladnejšia je jeho rýchla verzia (angl. Very Fast Decision Trees, VFDT) \citep{domingos2000mining}. Modifkácia HT algoritmu, ktorá sa vie vysporiadať so zmenami v prúde sa nazýva \textit{Rýchly algoritmus pre rozhodovacie stromy adaptujúci sa na zmeny} (angl. Concept-adapting Very Fast Decision Tree, CVFDT \citep{hulten2001mining}. CVFDT používa posuvné okno, pričom nevytvára pri detekovanej zmene nový model. Namiesto toho aktualizuje postačujúce štatistiky v uzloch inkrementovaním počítadiel nových vzoriek a dekrementovaním počítadiel vzoriek, ktoré vypadli z posuvného okna. Teda, ak je v prúde dát zmena, niektoré uzly stromu nemusia viac spĺňať Hoeffdingovu mieru. Keď nastane takáto situácia, alternujúci podstrom začne narastať v uzle, ktorý nesplnil Hoeffdingovu mieru. s novými vzorkami bude alternujúci podstrom rásť, zatiaľ bez toho aby bol použitý v modeli na klasifikáciu. V momente keď sa stane alternujúci podstrom presnejší ako aktuálny, starý podstrom je nahradený alternujúcim podstromom. V algoritme je možné nastaviť hraničnú hodnotu minimálneho počtu vzoriek, ktoré musí alternujúci podstrom spracovať predtým než sa pokusí nahradiť pôvodný \citep{hulten2001mining}.
 \par
 Ďalšou modifikáciou HT je \textit{Adaptívny sa Hoeffdingov strom} (angl. Hoeffding Adaptive Tree) predstavený Bifetom a Gavaladom v 2009. Princíp je veľmi podobný ako CVFDT, ale myšlienka je minimalizovať počet parametrov, ktoré musí používateľ nastaviť (napr. veľkosť okna $W$ je požadovaný parameter CVFDT). Adaptívny HT používa rôzne 	kritéria pre odhad potrebnej veľkosti okna automaticky, napríklad algoritmus \textit{ADWIN}. S použitím tohto kritéria používateľ nemusí zadať parameter veľkosti okna čo je obrovký prínos, pretože potrebná veľkosť sa môže meniť spolu so zmenami v prúde dát. Adaptívny HT s kritériom ADWIN dosahuje v niektorých prípadoch lepšie výsledky ako CVFDT \citep{bifet2009adaptive}.
