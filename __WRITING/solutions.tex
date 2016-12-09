@@ -84,6 +84,7 @@ Výskumné práce sa tiež venovali adaptívnym kontinuálnym dopytom nad prúdm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Detekcia zmien                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TODO: doplnit typy driftov
 \section{Detekcia zmien}
 Detekcia zmien (angl. concept drift) zohráva, v dnešnom rýchlo sa meniacom svete, dôležitú úlohu. Zmeny nastávajú veľmi rýchlo a nečakane. Preto stúpa potreba detekcie zmeny a následná správna reakcia, ktorá vyplynie z detekovanej zmeny. Na to aby sme boli schopný na tieto zmeny adekvátne reagovať je potrebné dáta spracovávať tak ako vznikajú a pozerať sa na ne ako na prúd udalostí. Tradičné metódy pre paralelné spracovanie uvažujú len statickú kolekciu dát \citep{tran2014change}. \par
 % TODO: pridat graf, ktory znazornuje rozne zmeny (nahla, inkrementalna, ...)
@@ -193,6 +194,7 @@ $SWEM$ je algoritmus rozšírený z EM algoritmu. Tento algoritmus používa pos
 %                Klasifikácia                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Klasifikácia}
+\label{ulohy-klasifikacia}
 Klasifikácia je proces hľadania všeobecného modelu, ktorý je vytvorený za základe predchádzajúcich pozorovaní. Model je potom použitý na klasifikovanie nových dát. Proces klasifikácie pozostáva z dvoch krokov: \textit{učenie} a \textit{trénovanie}. Počas učenia sa snažíme podľa algoritmu vytvoriť klasifikačný model z trénovacích dát (trénovacia množina). Počas testovania je vytvorený model použitý na klasifikovanie neoznačkovaných dát z testovacej množiny. Existujú rôzne dobre známe metódy pre klasifikáciu: rozhodovacie stromy, naivný Bayes, neurónové siete alebo k-najbližších susedov \citep{nguyen2015survey}. Niektoré z týchto metód sú v upravenej podobe vhodné na klasifikáciu prúdov dát, vybrané z nich sú detailnejšie popísané v tejto podkapitole. 
 \par
 Problém klasifikácie je zvyčajne formálne definovaný nasledovne: nech $A$ je trénovacia množina o $N$ prvkoch vo forme $(x,y)$ kde $y$ predstavuje skutočnú triedu vzorky a $x$ je vektor s $d$ atribútmi. Každý atribút môže nadobúdať numerické alebo kategorické hodnoty. Cieľom je vytvoriť na základe trénovacej množiny model resp. funkciu $y=f(x)$, ktorá bude predikovať triedu $y$ pre nové vzorky $x$ s vysokou presnosťou \citep{domingos2000mining}. 
