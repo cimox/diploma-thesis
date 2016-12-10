@@ -1,0 +1,106 @@
+\chapter{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+\label{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+
+%%%%%%%%
+% Uvod %
+%%%%%%%%
+
+Klasifikácia dát je dobre známa úloha a problém dolovania, analýzy a spracovania dát. Tento problém bol veľmi dobre a podrobne študovaný pri spracovaní statickej kolekcie údajov. Pri tomto prístupe sú všetky dáta v pamäti počítača. Vybraný algoritmus potom môže pomerne "lacno" prečítať celú množinu niekoľko krát s cieľom zvýšenia presnosti a kvality výsledného modelu. Tento prístup nieje aplikovateľný pre klasifikáciu prúdov dát z nasledujúcich dôvodov:
+
+\begin{itemize}
+	\item \textit{Prúd dát je potenciálne nekonečná sekvencia udalostí}, ktoré môžu byť správne alebo chybne usporiadané v závislosti od spoľahlivosti zdroja dát.
+	\item \textit{Obmedzená pamäť}, nieje možné všetky dáta zbierať a ukladať do pamäti. Toto obmedzenie vyplýva z prvej vlastnosti prúdov dát.
+	\item \textit{Model pre klasifikácii prúdov musí byť ihneď pripravený k použitiu.} 
+	\item \textit{Prúdy dát takmer vždy v sebe nesú zmeny} (angl. concept drift), na ktoré sa musí vedieť klasifikátor adaptovať. Vlasnosť klasifikačných modelov vysporiadať sa so zmenami považujeme za rozhodujúcu pri hodnotení ich kvality a použiteľnosti v praxi. Preto sa aj nami navrhovaná metóda sústreďuje na vytvorenie metódy, ktorá je schopná adaptácie na zmeny a ich adekvátne interpretovanie používateľovi. Zmeny v dátach môžu byť náhle, postupné ale môžu predstavovať aj očakávané sezónne vplyvy (napr. obdobie Vianoc z pohľadu počtu nákupov internetového obchodu).
+\end{itemize}
+
+Problém klasifikácie a jej definícia je podrobne opísaný v kapitole \ref{ulohy-klasifikacia}. V skratke, cieľom je nájsť funkciu $y = f(x)$, kde $y$ je skutočná trieda objektu/vzorky z prúdu dát a $x$ sú atribúty danej vzorky. Potom vieme pomocou funkcie $f(x)$ klasifikovať nové vzorky do triedy $y'$ s istou pravdepodobnosťou.
+
+\par
+
+Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú podrobne opísané v \ref{ulohy-klasifikacia}, pre klasifikáciu prúdov dát:
+\begin{itemize}
+	\item \textit{Hoeffdingove stromy} a ich rozšírenia, ktoré schopné adaptovať sa na zmeny (angl. concept drift) v dátach \citep{hulten2001mining, bifet2009adaptive}.
+	\item \textit{Bayesová klasifikácia} a jej rozšírenia v podobe Bayesových stromov ukázali použitie najmä pri detekcii anomálií v dátach \citep{hill2007real}.
+	\item \textit{Neurónové siete a evolučné metódy}. Evolučné programovanie našlo uplatnenie v stochastických optimalizačných problémoch, vlastnosti evolučných algoritmov môžu byť tiež aplikované na spracovanie prúdu dát s cieľom vysporiadať sa so zmenami v dátach. Experimentálne použitie neurónových sietí ukázalo porovnateľné výsledky s rozhodovacími stromami.
+	\item \textit{Súborové metódy} (angl. ensemble), ktoré aplikujú vrecovanie (angl. bagging) a zvyšovanie (angl. boosting) s cieľom zvýšenia presnosti modelu pomocou nájdenia optimálneho nastavenia a kombinácie viacerých klasifikátorov. Náhodné lesy sú typickým príkladom súborových metód, dokážú sa vysporiadať so zmeny v dátach, pričom časová náročnosť spracovania vzorky je $O(1)$ %TODO: citovat nahodne lesy .
+	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
+\end{itemize}
+
+Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
+
+\begin{itemize}
+	\item Detekcia podvodov pri finačných prevodoch. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
+	\item Klasifikácia zákaznika na webe. Toto má zmysel napríklad pre obchody ako Amazon.com. Pre takéto stránky je prínosné vedieť klasifikovať, či je navštevník webu potenciálny zakazník alebo má tendenciu odísť. Na základe týchto zistení môže majiteľ stránky vytvoriť ponuku pre zákazníka s cieľom udržať ho na stránke.
+	\item Klasifikácia sieťovej prevádzky s cieľom klasifikovať potenciálne pokusy o útoky na sieť.
+\end{itemize}
+
+V tejto práci preto navrhujeme metódu pre klasifikáciu prúdu dát. Metóda používa rozhodovacie stromy, je aplikovateľná na prúdy dát a model je takmer okamžite pripravený na použitie (záasadný rozdiel oproti tradičným metódam). Kladieme dôraz na spracovanie v reálnom čase, ktoré je najzákladnejšie pri spracovaní prúdov dát. Veľkú pozornosť tiež venujeme adaptácii metódy na zmeny v dátach. Výsledný model aj s príslušnými zmenami, ktoré v dátach nastali, prezentujeme používateľovi vo výslednej webovej aplikácii prostredníctvom vizualizácie.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spracovanie prudu dat %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spracovanie prúdu dát}
+\label{method-spracovanie-prudu-dat}
+
+Spracovaniu prúdu dát venujeme samostatnú kapitolu, pretože si zaslúži špeciálnu pozornosť a rozdielny prístup v porovnaní so spracovaním statickej kolekcii dát. Navrhovaná metóda je všeobecne použiteľná na problémy klasifikácie pre prúdy dát. Znamená to, že spracuje dáta v takmer reálnom čase, poskytne odpoveď a teda aj vytvorený model okamžite a je schopná adaptávacie na zmeny. Pre splnenie týchto požiadaviek je potrebné venovať samostatnú pozornosť spracovaniu prúdu dát, teda požadujeme aby navrhovaná metóda spĺňala nasledujúce kritéria \citep{cimerman2015prudy}:
+\begin{itemize}
+	\item \textit{Odolnosť voči chybám} z pohľadu architektúry spracujúcej dáta. Chybné alebo chýbajúce dáta môžu mať kritický dopad na správne fungovanie a kvalitu klasifikačného modelu.
+	\item \textit{Spracovanie v reálnom čase} je opäť dôležité pre správne fugnovanie výsledného modelu, pretože model je aktualizovaný a prispôsobovaný zmenám v dátach kontiunálne. Oneskorenie niektorých správ, napríklad o 24 hodín čo je bežná prax pri ETL\footnote{ETL je proces, či architektonický vzor prenosu dát medzi viacerými častami databázových systémov  a aplikáciami, tento vzor je často používaný pre dátové sklady, skratka znamená Extrahuj, Transformuj a Načítaj (angl. Extract, Transform, Load)} procesoch, by mohlo mať nežiadúce následky vo forme skresleného modelu.
+	\item \textit{Horizontálna škálovateľnosť} komponentu, ktorý spracuje prúd dát. Táto vlastnosť podporuje splnenie predchádzajúcich požiadaviek. Pod horizontálnou škálovateľnosťou chápeme to, že je možné zvýšiť výkonnosť celého systému pridaním fyzického uzla bez akýchkoľvek výpadkov. Táto požiadavka implikuje podmienku distribuovanej povahy riešenia.
+\end{itemize}
+
+S cieľom splniť tieto požiadavky sme sa rozhodli použiť nasledujúce programovacie rámce a systémy:
+\begin{itemize}
+	\item \textit{Storm}\footnote{http://storm.apache.org/} je programovací rámec vytvorený pre spracovanie dát v reálnom čase. Storm poskytuje možnosti škálovateľnej architektúry, ktorá je naviac odolná voči chybám na úrovni kvality dát. Programovanie nad týmto rámcom je možné v každom programocom jazyku, ktorý je možné skompilovať do Java bajtkódu a vykonávať v JVM\footnote{Virtuálny stroj Java (angl. Java virtual machine)}. Storm poskytuje aplikovať akýkoľvek programovací vzor, model ktorý poskytuje je vyjadrený, resp. vytvára acyklický orientovaný graf zostrojený z tzv. prameňov a skrutiek.
+	\item \textit{Kafka}\footnote{https://kafka.apache.org/} je distribuovaná platforma pre spracovanie prúdov dát. Kafka je vhodná na budovanie apliikácií, ktoré potrebujú spracovať zdroje dát v reálnom čase a vymieňať tieto dáta medzi aplikáciami. Poskytuje možnosť publikovat (angl. publish) a predplatiť (angl. subscribe) prúdy dát. Kafka je postavená na modely fronty správ, pričom si tieto správy udržiava v pamäti a na disk ich replikuje pre prípad zlyhania.
+\end{itemize}
+
+Nasledujúci obrázok schematicky popisuje architektúru spracovania prúdu dát potrebnú pre správne fungovanie metódy pre klasifikáciu prúdu dát s použitím rozhodovacích stromov.
+%TODO obrazok spracovanie, kafka + storm
+
+
+
+\section{Metóda klasifikácie prúdu dát}
+\label{method-klasifikacia-prudu-dat}
+
+
+
+HFDT, Adaptive HFDT
+
+Ako funguje, ako je implementovana, nad MOA, atd. State-of-the-art metoda
+
+Metoda sa musi vysporiadat s: concept drift, sezonnost, anomalie, okamzite fungovanie modelu pre klasifikaciu
+
+Pri detekcií trendu bude nutné zohľadniť nasledujúce elementy:
+\begin{itemize}
+	\item anomálie, chyby a spam,
+	\item sezónnosť dát,
+	\item concept drift a zmeny,
+\end{itemize}
+
+V situácií keď potrebuje doménovy expert analyzovať trend v dátach reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má. Potom, pre to, aby vedel správne analyzovať trend, sa potrebuje oboznámiť s viacerými modelmi a následne ich vyhodnotiť. Práve túto činnosť chceme uľahčiť doménovým expertom našou metódou. Nami navrhovaná metóda, schematicky zobrazená na \ref{fig:method-proposal} pozostáva z nasledujúcich krokov:
+\begin{enumerate}
+	\item Používateľ vyberie metódu, ktorú chce aplikovať na analýzu trendu v prúde dát. Používateľ môže metódu vybrať sám, alebo nechá aplikáciu aby mu odporučila podľa vzorky dát vhodnú metódu.
+	\item Paralelne sa nepretržite spracuje a analyzuje prúd údajov. Zároveň je vytváraný model.
+	\item Po každej spracovanej správe je model vyhodnotený viacerými metrikami. Podľa výsledku evaluácie sa upraví aktuálny model.
+	\item Posledným krokom je prezentácia výsledkov používateľovi vo forme vizualizácie.
+\end{enumerate}
+\myFigure{images/DP_PeWe_method-propose}{Schematický návrh metódy pre semi-automatickú analýzu trendov.}{method-proposal}{0.45}{h!}\label{fig:method-proposal}
+
+\section{Prezentácia výsledkov používateľovi}
+
+
+
+\section{Vyhodnotenie a experimenty}
+Kladieme nasledujúce hypotézy:
+\begin{hypothesis}{Naše riešenie detekuje trendy v prúde dát s istou pravdepodobnosťou použitím polo-automatického výberu vhodnej metódy pre detekciu trendov a zároveň poskytuje výsledky v reálnom čase}
+\end{hypothesis}
+\begin{hypothesis}{Metóda je ľahká na použitie a interpretované výsledky sú jednoduché na pochopenie pre doménového experta bez detailnej znalosti o fungovaní modelu.}
+\end{hypothesis}
+
+
+
+
+
