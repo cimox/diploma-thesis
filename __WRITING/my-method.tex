@@ -27,15 +27,15 @@ Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú 
 	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
 \end{itemize}
 
-Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
+Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/#?modal_active=none} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
 
 \begin{itemize}
 	\item Detekcia podvodov pri finačných prevodoch. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
 	\item Klasifikácia zákaznika na webe. Toto má zmysel napríklad pre obchody ako Amazon.com. Pre takéto stránky je prínosné vedieť klasifikovať, či je navštevník webu potenciálny zakazník alebo má tendenciu odísť. Na základe týchto zistení môže majiteľ stránky vytvoriť ponuku pre zákazníka s cieľom udržať ho na stránke.
-	\item Klasifikácia sieťovej prevádzky s cieľom klasifikovať potenciálne pokusy o útoky na sieť.
+	\item Klasifikácia sieťovej prevádzky s cieľom klasifikovať potenciálne pokusy o útoky na sieť. Cieľom takejto úlohy je eliminácia útoku a stým spojená minimalizácia prestoja (angl. downtime) siete a nákladov spôsobených škodami z úspešného útoku.
 \end{itemize}
 
-V tejto práci preto navrhujeme metódu pre klasifikáciu prúdu dát. Metóda používa rozhodovacie stromy, je aplikovateľná na prúdy dát a model je takmer okamžite pripravený na použitie (záasadný rozdiel oproti tradičným metódam). Kladieme dôraz na spracovanie v reálnom čase, ktoré je najzákladnejšie pri spracovaní prúdov dát. Veľkú pozornosť tiež venujeme adaptácii metódy na zmeny v dátach. Výsledný model aj s príslušnými zmenami, ktoré v dátach nastali, prezentujeme používateľovi vo výslednej webovej aplikácii prostredníctvom vizualizácie.
+V tejto práci preto navrhujeme metódu pre klasifikáciu prúdu dát. Navrhnutá metóda môže byť použitá na akúkoľvek úlohu klasifikácie. Navrhovaná metóda používa techniku rozhodovacích stromov, je aplikovateľná na prúdy dát a model je takmer okamžite pripravený na použitie (záasadný rozdiel oproti tradičným metódam). Kladieme dôraz na spracovanie v reálnom čase, ktoré je najzákladnejšie pri spracovaní prúdov dát. Veľkú pozornosť pritom mierime na schopnosť adaptácie metódy na zmeny v dátach. Výsledný model aj s príslušnými zmenami, ktoré v dátach a modely nastali, prezentujeme používateľovi vo výslednej webovej aplikácii prostredníctvom vizualizácie. Okrem toho je našim cieľom navrhnúť metódu tak aby používateľ, ktorý je najčastejšie doménový expert, nemusel mať detailné znalosti o vnútornom fungovaní metódy.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,33 +64,25 @@ Nasledujúci obrázok schematicky popisuje architektúru spracovania prúdu dát
 
 \section{Metóda klasifikácie prúdu dát}
 \label{method-klasifikacia-prudu-dat}
+Cieľom je klasifikácia prúdu dát, pričom vytvorený model je pripravený na použitie takmer okamžite po prečítaní prvých vzoriek dát. Model sa tiež prispôsobuje zmenám a do istej miery sezónnym efektom v dátach. Základ metódy pre klasifikáciu sme zvolili state-of-the-art algoritmus rozhodovacích stromov, ktorý používa Hoeffdingovu mieru \citep{domingos2000mining, gaber2005mining, krempl2014open}. Hoeffdingova miera je použitá na rozhodnutie, či bol prečítaný dostatočný počet vzoriek na to aby sa mohol uzol v strome zmeniť na rozhodovací uzol. Táto miera zabezpečuje to, že sa výsledný model asymptoticky blíži svojou kvalitou k tomu, ktorý by vznikol podobnou metódou pre statické dáta. Zároveň má táto miera vlastnosť, že  dôvera v presnosť modelu exponenciálne rastie s lineárnym nárastom počtu prečítaných vzoriek. Hoeffdingova miera je definovaná používateľom parametrom spoľahlivosti $\delta$, kde spoľahlivosť je $(1-\delta) \in <0,1>$. Metrika kvality vzorky $G$ môže byť použitá ľubovoľná, napríklad informačný zisk (angl. information gain).
+\par
+Metóda potrebuje na trénovanie označkované numerické alebo kategorické dáta do viacerých tried. Dáta musia byť vo forme n-tíc $(x_1, x_2, ..., x_n | y)$ kde $x$ sú atribúty vzorky a $y$ skutočná trieda vzorky. Nami vybraný potrebuje len minimum parametrov, ktoré je potrebné nastaviť pre správne fungovanie. Jedným z nich metódy je minimálny počet spracovaných vzoriek pred vytvorením prvého modelu. Týmto je možné minimalizovať prvotnú nepresnosť počiatočného modelu. Výsledný model je jednoduchý na reprezentáciu vďaka možnosti jeho intuitívnej interpretácii rozhodovacím stromom. Rozhodovací strom pozostáva z rozdeľovacích uzlov (angl. split node), tiež niekedy nazývané testovacie uzly, a listov (angl. leaf). V rozhodovacích uzloch sa vykonáva testovanie vzorky a jej posunutie do jednej z nasledujúcich vetiev alebo listu stromu. Ak vzorka narazí na list znamená to, že bola klasifikovaná do istej triedy, ktorú opisuje daný list. Takto vytvorený model je použiteľný na klasifikáciu v rôznych aplikáciách.
+\par
+Problémom rozhodovacích stromov je najmä ich šírka. Klasifikátory, ktoré používajú modely a algoritmy rozhodovacích stromov môžu podľa dát byť priveľmi široké. Tento problém môže mať za následok preučenie (angl. overfitting) modelu, ktorý bude vedieť klasifikovať veľmi dobre trénovacie dáta, resp. dáta zo začiatku prúdu, ale na nových dátach bude veľmi nepresný. Tento problém nastáva najmä pri spojitých číselných atribútoch a ich nerovnomernej distribúcii. Existuje niekoľko známych spôsobov ako sa stýmto nežiadúcim javom vysporiadať, jedným z nich je pre-prerezávanie (angl. pre-pruning) stromu. Tento spôsob aplikujeme aj v našej metóde priadním nulového atribútu $X_0$ do každého uzla, ktorý spočíva v nerozdeľovaní daného uzla. Takže uzol sa stane rozhodovacím iba, ak je metrika $G$, so spoľahlivosťou $1-\delta$, lepšia ako keby sa uzol nezmenil na rozhodovací.
+\par
+V našich experimentoch sa, ale ukázalo, že pre-prerezávanie nieje dostatočný spôsob pre redukciu šírky stromu. Navrhujeme preto použiť metódy pre výber významných atribútov. Znamená to teda, že nebudú použité všetky atribúty pre učenie modelu a jeho následné použitie. Na takúto významovú analýzu je možné použiť napríklad náhodné lesy. Náhodné lesy vytvárajú veľa jednoduchých stromov, kde každý strom obsahuje práve jeden rozhodovací uzol. Následné sa zvolenou metrikou vyberú najvýznamnejšie atribúty a tie budú použité pre trénovanie a použitie klasifikátora.
+\par
+Nami navrhovaná metóda sa musí vysporiadať so zmenami v dátach, pretože tie nesú v sebe takmer všetky prúdy dát. Zmeny môžu mať rôzny charakter, napríklad náhly kedy zmena nastane nečakane alebo postupný kedy sa zmena deje dlhú dobu a pomaly. Výsledný model musí pre udržanie svojej presnosti zohladniť tieto zmeny. Metóda používa algoritmus \textit{ADWIN} z anglického Adaptive Windowing \citep{Hutchison2009}. Tento algoritmus nepožaduje žiadne nastavenia parametrov používateľom ako napríklad veľkosť posuvného okna. Jediným parametrom je hodnota istoty $\delta$ s akou bude algoritmus detekovať zmeny v prúde dát. Myšlienka ADWIN spočíva v tom, že nenenastala žiadna zmena v priemernej hodnote vybranej metriky v okne.
 
 
 
-HFDT, Adaptive HFDT
-
-Ako funguje, ako je implementovana, nad MOA, atd. State-of-the-art metoda
-
-Metoda sa musi vysporiadat s: concept drift, sezonnost, anomalie, okamzite fungovanie modelu pre klasifikaciu
-
-Pri detekcií trendu bude nutné zohľadniť nasledujúce elementy:
-\begin{itemize}
-	\item anomálie, chyby a spam,
-	\item sezónnosť dát,
-	\item concept drift a zmeny,
-\end{itemize}
-
-V situácií keď potrebuje doménovy expert analyzovať trend v dátach reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má. Potom, pre to, aby vedel správne analyzovať trend, sa potrebuje oboznámiť s viacerými modelmi a následne ich vyhodnotiť. Práve túto činnosť chceme uľahčiť doménovým expertom našou metódou. Nami navrhovaná metóda, schematicky zobrazená na \ref{fig:method-proposal} pozostáva z nasledujúcich krokov:
-\begin{enumerate}
-	\item Používateľ vyberie metódu, ktorú chce aplikovať na analýzu trendu v prúde dát. Používateľ môže metódu vybrať sám, alebo nechá aplikáciu aby mu odporučila podľa vzorky dát vhodnú metódu.
-	\item Paralelne sa nepretržite spracuje a analyzuje prúd údajov. Zároveň je vytváraný model.
-	\item Po každej spracovanej správe je model vyhodnotený viacerými metrikami. Podľa výsledku evaluácie sa upraví aktuálny model.
-	\item Posledným krokom je prezentácia výsledkov používateľovi vo forme vizualizácie.
-\end{enumerate}
-\myFigure{images/DP_PeWe_method-propose}{Schematický návrh metódy pre semi-automatickú analýzu trendov.}{method-proposal}{0.45}{h!}\label{fig:method-proposal}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Prezentacia vysledkov pouzivatelovi %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Prezentácia výsledkov používateľovi}
-
+\label{my-method-prezentacia-vysledkov}
+V situácií keď potrebuje doménovy expert analyzovať trend v dátach reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má. Potom, pre to, aby vedel správne analyzovať trend, sa potrebuje oboznámiť s viacerými modelmi a následne ich vyhodnotiť. Práve túto činnosť chceme uľahčiť doménovým expertom našou metódou.
 
 
 \section{Vyhodnotenie a experimenty}
