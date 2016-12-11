@@ -27,7 +27,8 @@ Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú 
 	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
 \end{itemize}
 
-Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/#?modal_active=none} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
+Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/
+} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
 
 \begin{itemize}
 	\item Detekcia podvodov pri finačných prevodoch. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
@@ -72,7 +73,7 @@ Problémom rozhodovacích stromov je najmä ich šírka. Klasifikátory, ktoré 
 \par
 V našich experimentoch sa, ale ukázalo, že pre-prerezávanie nieje dostatočný spôsob pre redukciu šírky stromu. Navrhujeme preto použiť metódy pre výber významných atribútov. Znamená to teda, že nebudú použité všetky atribúty pre učenie modelu a jeho následné použitie. Na takúto významovú analýzu je možné použiť napríklad náhodné lesy. Náhodné lesy vytvárajú veľa jednoduchých stromov, kde každý strom obsahuje práve jeden rozhodovací uzol. Následné sa zvolenou metrikou vyberú najvýznamnejšie atribúty a tie budú použité pre trénovanie a použitie klasifikátora.
 \par
-Nami navrhovaná metóda sa musí vysporiadať so zmenami v dátach, pretože tie nesú v sebe takmer všetky prúdy dát. Zmeny môžu mať rôzny charakter, napríklad náhly kedy zmena nastane nečakane alebo postupný kedy sa zmena deje dlhú dobu a pomaly. Výsledný model musí pre udržanie svojej presnosti zohladniť tieto zmeny. Metóda používa algoritmus \textit{ADWIN} z anglického Adaptive Windowing \citep{Hutchison2009}. Tento algoritmus nepožaduje žiadne nastavenia parametrov používateľom ako napríklad veľkosť posuvného okna. Jediným parametrom je hodnota istoty $\delta$ s akou bude algoritmus detekovať zmeny v prúde dát. Myšlienka ADWIN spočíva v tom, že nenenastala žiadna zmena v priemernej hodnote vybranej metriky v okne.
+Nami navrhovaná metóda sa musí vysporiadať so zmenami v dátach, pretože tie nesú v sebe takmer všetky prúdy dát. Zmeny môžu mať rôzny charakter, napríklad náhly kedy zmena nastane nečakane alebo postupný kedy sa zmena deje dlhú dobu a pomaly. Výsledný model musí pre udržanie svojej presnosti zohladniť tieto zmeny. Metóda používa algoritmus \textit{ADWIN} z anglického Adaptive Windowing \citep{Hutchison2009}. Tento algoritmus nepožaduje žiadne nastavenia parametrov používateľom ako napríklad veľkosť posuvného okna. Jediným parametrom je hodnota istoty $\delta$ s akou bude algoritmus detekovať zmeny v prúde dát. Myšlienka ADWIN spočíva v tom, že nenenastala žiadna zmena v priemernej hodnote vybranej metriky v okne. Ak je detekovaná zmena, v uzle začne narastať alternujúci podstrom. Tento podstrom musí spracovať definovaný minimálny počet vzoriek. Potom, ak je kvalita podstromu vyššia ako kvalita podstromu, z ktorého začal narastať, starý podstrom je nahradený alternujúcim podstromom. Naraz môže existovať niekoľko alternujúcich podstromov, pričom môže nastať situácia kedy ani jeden z nich nebude mať vyššiu kvalitu a nesplní Hoeffdingovu mieru preto aby nahradil starý podstrom.
 
 
 
@@ -82,12 +83,33 @@ Nami navrhovaná metóda sa musí vysporiadať so zmenami v dátach, pretože ti
 
 \section{Prezentácia výsledkov používateľovi}
 \label{my-method-prezentacia-vysledkov}
-V situácií keď potrebuje doménovy expert analyzovať trend v dátach reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má. Potom, pre to, aby vedel správne analyzovať trend, sa potrebuje oboznámiť s viacerými modelmi a následne ich vyhodnotiť. Práve túto činnosť chceme uľahčiť doménovým expertom našou metódou.
+
+V situácii keď potrebuje doménovy expert vytvoriť klasifikačný model s použitím dát reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má.  Následne preto, aby vedel vytvoriť správny model potrebuje mať detailné znalosti o fungovaní klasifikačných metód a algoritmov. Cieľom našej metódy je odbremeniť experta od nutnosti mať detailné znalosti o fungovaní modelu a algoritmov. Výber atribútov a algoritmov, ktoré budp použité na trénovanie modelu je bez nutnosti interakcie používateľa v zmysle nastavovania parametrov a výberu metódy. 
+\par
+Pretože používateľ nemusí mať detailné znalosti o fungovaní algoritmov a klasifikačných metód, je dôležité vysvetlenie výsledného modelu. Znamená to, že je dôležité aby pre používateľa nebol vzniknutý model len čierna skrinka (angl. black-box), ktorá s nejakou úspešnosťou dokáže klasifikovať prúdy dát. Navrhujeme preto vizualizáciu výsledného modelu. Vizualizácia je vo forme rozhodovacieho stromu, ktorý je jednoduchý na pochopenie aj bez predchádzajúcich znalostí o rozhodovacích stromov \citep{nguyen2015survey}. Sústreďujeme sa tiež na zobrazenie zmien (angl. concept drift) v dátach resp. zmenách, ktoré sa odzrkadlia aj v modely. Zmeny samotného modelu vizualizujeme ako animáciu, ktorú je možné spustiť a pozorovať vývoj stromu. Ďalej poskytujeme náhľad vo forme čiarového grafu na kvalitu alternujúcich podstromov, ktoré boli vytvorené pri detekovaní zmeny.
+\par
+Pomocou týchto vizualizácií chceme prezentovať výsedky našej klasifikačnej metódy používateľovi. Prezentované výsledky by mali byť jednoduché na pochopenie aj bez detailných znalostí o fungovaní metódy a algoritmov. Overenie použiteľnosti a miery pochopenia prezentovaných výsledkov overujeme detailnými používateľskými štúdiami a vyhodnotením tromi doménovými expertami (majú znalosti o fungovaní metódy a algoritmov). 
 
 
 \section{Vyhodnotenie a experimenty}
-Kladieme nasledujúce hypotézy:
-\begin{hypothesis}{Naše riešenie detekuje trendy v prúde dát s istou pravdepodobnosťou použitím polo-automatického výberu vhodnej metódy pre detekciu trendov a zároveň poskytuje výsledky v reálnom čase}
+Pre kvantifikovanie správneho fungovania nami navrhovanej metódy navrhujeme viaceré experimenty. Prvým z experimentov je vyhodnotenie integrácie časti spracovania prúdu dát s našou metódou. Pri tomto vyhodnocovaní sa budeme pozerať na výkonnostné metriky, ktoré hovoria o priepustnosti a výkone tejto časti aplikácie. Zaujíma nás hlavne odolnosť voči chýbam, spracovanie v reálnom čase a zaťaženie procesoru a pamäte v závislosti na objeme dát.
+\par
+Vyhodnotenie samotnej metódy pre klasifikáciu prúdu dát nás zaujímajú bežné metriky používané pri vyhodnocovaní modelov strojové učenie, ako napríklad presnosť (angl. precision) a pokrytie (angl. recall). Keďže ide o klasifikovanie prúdu dát, zameriavame sa tiež na nasledujúce metriky:
+\begin{itemize}
+	\item \textit{Kappa štatistiky}, ktoré dobre vyjadrujú presnosť klasifikátora nestabilné prúdy dát.
+	\item \textit{Najprv test-potom-trénovanie} (angl. Test-Then-Train alebo Prequential) je metrika používaná pre meranie výkonnosti klasifikátorov, ktoré sa vyvíjajú v čase.
+\end{itemize}
+Pri vyhodnocovaní klasifikačnej metódy sa tiež pozeráme na vhodnosť výberu rôznych algoritmov pre výber atribútov, detekcie zmien (angl. concept drift) a samotného klasifikačného algoritmu.
+\par
+Vysokú pozornosť venujeme vyhodnoteniu prezentovaných výsledkov používateľovi. Najprv robíme vyhodnotenie fungovania celej aplikácie ako celku s tromi expertami, ktorí majú detailné znalosti o fungovaní metód a algoritmov strojového učenia. Ďalej navrhujeme experiment vo forme používateľskej štúdie. Používateľská štúdia môže prebiehať v kontrolovanom, ale aj v "domácom" prostredí. Počas tejto štúdie budú účastnici vykonávať definované úlohy s cieľom zmerať a kvantifikovať ich výkonnosť a vôbec schopnosť splniť stanovené úlohy. Tieto úlohy môžu byť od jednoduchých ako odčítanie hodnotu z grafu, až po komplexné ako zistiť počet signifikantných zmien modelu a ich čas kedy nastali, či krátke slovná reprezentácia fungovania modelu.
+
+\par
+V tejto kapitole navrhujeme metódu pre klasifikáciu prúdu dát. Metóda poskytuje iba jeden voliteľný parameter, ktorý musí nastaviť používateľ, hodnotu istoty $\delta$. Parameter reprezentuje istotu $1-\delta$, že bude výsledný model identický stým, ktorý by vznikol použitím tradičnej metódy. Cieľom metódy je, že používateľ nemusí mať znalosti o fungovaní klasifikačných algoritmov, ale je schopný použíť v praxi nami navrhovanú metódu. Naviac, výsledná model reprezentujeme vo forme vizualizácie, ktorý má pomôcť vysvetliť fungovanie modelu.
+
+Kladieme si teda nasledujúce hypotézy:
+\begin{hypothesis}{Naša metóda je schopná s istou chybovosťou klasifikovať prúdy dát a zároveň poskytuje výsledky v reálnom čase.}
+\end{hypothesis}
+\begin{hypothesis}{Metóda automaticky vyberá najlepšie atribúty na učenie. Výber je vykonávaný s istou chybovosťou.}
 \end{hypothesis}
 \begin{hypothesis}{Metóda je ľahká na použitie a interpretované výsledky sú jednoduché na pochopenie pre doménového experta bez detailnej znalosti o fungovaní modelu.}
 \end{hypothesis}
