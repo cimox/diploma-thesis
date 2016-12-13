@@ -1,6 +1,10 @@
 \chapter{Zhodnotenie a budúca práca}
 \label{Zhodnotenie a budúca práca}
 
-Táto práca je prvý časť diplomového projektu a obsahuje len prvotný návrh metódy v doméne analýzy prúdu udalostí, konkretne pre analýzu trendov v prúde udalostí. Úspešne sa nám podarilo zhodnotiť niektoré typické analytické úlohy, s ktorými sa stretávajú doménový experti pri ich práci a k nim príslušné metódy.
-\\
-V ďalšej práci sa budeme venovať ďalšej analýze problematiky a hlavne návrhu a implementácii navrhovanej metódy.
+V tejto práci sa venujeme analýze prúdu údajov s použitím rôznych metód pre analýzu údajov. Detailne analyzujeme najčastejšie úlohy analýzu dát, ktoré vykonávajú doménový experti. Tieto úlohy sú napríklad zhlukovanie, či klasifikácia. Zameriavame sa pritom na úlohu klasifikácie spolu s interpretáciou vzniknutého modelu. 
+\par
+Navrhovaná metóda pre klasifikáciu prúdu dát je rozšírením známej metódy rozhodovaích stromov. Algoritmus používa Hoeffdingovu mieru pre výber vhodného atribútu s obmedzeným počtom prečítaných vzoriek. Táto vlastnosť je žiaduca pri konštruovaní modelu nad prúdom dát. Naviac, istota výberu najlepšieho atribútu pre rozhodnutie rastie exponenciálne s lineárnym nárastom počtu prečítaných vzoriek. Pozornosť venujeme tiež adaptácii na zmeny (angl. concept drift) v prúde dát. Aplikujeme algoritmus ADWIN s cieľom adaptívneho posuvného okna, ktoré zabezpečí adaptáciu modelu na rôzne typy zmien. Správne fungovanie tohto prístupu je potrebné ešte detailne overiť v sérií experimentov.
+\par
+Ďalšia časť navrhovanej metódy sa venuje interpretácii výsledkov používateľovi. Cieľom je prezentovať a vizualizovať výsledky v jednoduchej forme, zatiaľ čo bude používateľ chápať model na postačujúcej urovni. V práci prezentujeme prvý jednoduchý prototyp, ktorý v ďalšej práci plánujeme značne rozšíriť o ďalšie metriky a real-time grafy.
+\par
+Ďalšou prácou bude teda vyhodnotenie adaptácie navrhovanej metódy a použitých algoritmov na zmeny v prúde dát. Experiment v podobe používateľskej štúdie s cieľom zisiť mieru použiteľnosť aplikácie ako celku, ale najmä nami zvolenej interpretácie výsledkov.

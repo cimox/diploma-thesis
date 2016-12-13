@@ -1,0 +1,116 @@
+\chapter{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+\label{Klasifikácia prúdu dát použitím rozhodovacích stromov}
+
+%%%%%%%%
+% Uvod %
+%%%%%%%%
+
+Klasifikácia dát je dobre známa úloha a problém dolovania, analýzy a spracovania dát. Tento problém bol veľmi dobre a podrobne študovaný pri spracovaní statickej kolekcie údajov. Pri tomto prístupe sú všetky dáta v pamäti počítača. Vybraný algoritmus potom môže pomerne "lacno" prečítať celú množinu niekoľko krát s cieľom zvýšenia presnosti a kvality výsledného modelu. Tento prístup nie je aplikovateľný pre klasifikáciu prúdov dát z nasledujúcich dôvodov:
+\begin{itemize}
+	\item \textit{Prúd dát je potenciálne nekonečná sekvencia udalostí}, ktoré môžu byť správne alebo chybne usporiadané v závislosti od spoľahlivosti zdroja dát. Hlavný problém tu predstavuje to, že prúd je nekonečná sekvencia udalostí. Závažnosť problému usporiadania daných udalostí, či vozriek závisí od konkrétnej úlohy analýzy prúdu dát.
+	\item \textit{Obmedzená pamäť}, nieje možné všetky dáta zbierať a ukladať do pamäti. Toto obmedzenie vyplýva z prvej vlastnosti prúdov dát.
+	\item \textit{Model pre klasifikácii prúdov musí byť ihneď pripravený k použitiu.} Znamená to, že hneď po tom ako sú spracované prvé dáta z prúdu, model je pripravený na použitie, napríklad klasifikovať iný prúd dát.
+	\item \textit{Prúdy dát takmer vždy v sebe nesú zmeny} (angl. concept drift), na ktoré sa musí vedieť klasifikátor adaptovať. Vlasnosť klasifikačných modelov vysporiadať sa so zmenami považujeme za rozhodujúcu pri hodnotení ich kvality a použiteľnosti v praxi. Preto sa aj nami navrhovaná metóda sústreďuje na vytvorenie metódy, ktorá je schopná adaptácie na zmeny a ich adekvátne interpretovanie používateľovi. Zmeny v dátach môžu byť náhle, postupné ale môžu predstavovať aj očakávané sezónne vplyvy (napr. obdobie Vianoc z pohľadu počtu nákupov internetového obchodu).
+\end{itemize}
+Problém klasifikácie a jej definícia je podrobne opísaný v kapitole \ref{ulohy-klasifikacia}. V skratke, cieľom je nájsť funkciu $y = f(x)$, kde $y$ je skutočná trieda objektu/vzorky z prúdu dát a $x$ sú atribúty danej vzorky. Potom vieme pomocou funkcie $f(x)$ klasifikovať nové vzorky do triedy $y'$ s istou pravdepodobnosťou.
+
+\par
+Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/
+} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
+\begin{itemize}
+	\item \textit{Detekcia podvodov pri finačných prevodoch}. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
+	\item \textit{Klasifikácia zákaznika na webe}. Toto má zmysel napríklad pre obchody ako Amazon.com. Pre takéto stránky je prínosné vedieť klasifikovať, či je navštevník webu potenciálny zakazník alebo má tendenciu odísť. Na základe týchto zistení môže majiteľ stránky vytvoriť ponuku pre zákazníka s cieľom udržať ho na stránke.
+	\item \textit{Klasifikácia sieťovej prevádzky} s cieľom klasifikovať potenciálne pokusy o útoky na sieť. Cieľom takejto úlohy je eliminácia útoku a stým spojená minimalizácia prestoja (angl. downtime) siete a nákladov spôsobených škodami z úspešného útoku.
+\end{itemize}
+Pre všetky vyššie opísané prípady použitia má zmysel zohľadniť zmeny v prúde dát v modeli. Pretože, ak sa napríklad mení správanie používateľa na webe v závislosti od zmien na stránke, napríklad v podobe zmeny dizajnu, chceme tieto zmeny odzrkadliť aj vo výslednom modeli. Rovnako ma zmysel tieto zmeny aj interpretovať prostredníctvom vizualizácie používateľovi.
+
+\par
+Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú podrobne opísané v \ref{ulohy-klasifikacia}, pre klasifikáciu prúdov dát:
+\begin{itemize}
+	\item \textit{Hoeffdingove stromy} a ich rozšírenia, ktoré schopné adaptovať sa na zmeny (angl. concept drift) v dátach \citep{hulten2001mining, bifet2009adaptive}.
+	\item \textit{Bayesová klasifikácia} a jej rozšírenia v podobe Bayesových stromov ukázali použitie najmä pri detekcii anomálií v dátach \citep{hill2007real}.
+	\item \textit{Neurónové siete a evolučné metódy}. Evolučné programovanie našlo uplatnenie v stochastických optimalizačných problémoch, vlastnosti evolučných algoritmov môžu byť tiež aplikované na spracovanie prúdu dát s cieľom vysporiadať sa so zmenami v dátach. Experimentálne použitie neurónových sietí ukázalo porovnateľné výsledky s rozhodovacími stromami.
+	\item \textit{Súborové metódy} (angl. ensemble), ktoré aplikujú vrecovanie (angl. bagging) a zvyšovanie (angl. boosting) s cieľom zvýšenia presnosti modelu pomocou nájdenia optimálneho nastavenia a kombinácie viacerých klasifikátorov. Náhodné lesy sú typickým príkladom súborových metód, dokážú sa vysporiadať so zmeny v dátach, pričom časová náročnosť spracovania vzorky je $O(1)$ \citep{abdulsalam2011classification}.
+	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
+\end{itemize}
+
+V tejto práci preto navrhujeme metódu pre klasifikáciu prúdu dát. Navrhnutá metóda môže byť použitá na akúkoľvek úlohu klasifikácie. Navrhovaná metóda používa techniku rozhodovacích stromov, je aplikovateľná na prúdy dát a model je takmer okamžite pripravený na použitie (záasadný rozdiel oproti tradičným metódam). Kladieme dôraz na spracovanie v reálnom čase, ktoré je najzákladnejšie pri spracovaní prúdov dát. Veľkú pozornosť pritom mierime na schopnosť adaptácie metódy na zmeny v dátach. Výsledný model aj s príslušnými zmenami, ktoré v dátach a modely nastali, prezentujeme používateľovi vo výslednej webovej aplikácii prostredníctvom vizualizácie. Okrem toho je našim cieľom navrhnúť metódu tak aby používateľ, ktorý je najčastejšie doménový expert, nemusel mať detailné znalosti o vnútornom fungovaní metódy.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spracovanie prudu dat %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spracovanie prúdu dát}
+\label{method-spracovanie-prudu-dat}
+
+Spracovaniu prúdu dát venujeme samostatnú kapitolu, pretože si zaslúži špeciálnu pozornosť a rozdielny prístup v porovnaní so spracovaním statickej kolekcii dát. Navrhovaná metóda je všeobecne použiteľná na problémy klasifikácie pre prúdy dát. Znamená to, že spracuje dáta v takmer reálnom čase, poskytne odpoveď a teda aj vytvorený model okamžite a je schopná adaptávacie na zmeny. Pre splnenie týchto požiadaviek je potrebné venovať samostatnú pozornosť spracovaniu prúdu dát, teda požadujeme aby navrhovaná metóda spĺňala nasledujúce kritéria \citep{cimerman2015prudy}:
+\begin{itemize}
+	\item \textit{Odolnosť voči chybám} z pohľadu architektúry spracujúcej dáta. Chybné alebo chýbajúce dáta môžu mať kritický dopad na správne fungovanie a kvalitu klasifikačného modelu.
+	\item \textit{Spracovanie v reálnom čase} je opäť dôležité pre správne fugnovanie výsledného modelu, pretože model je aktualizovaný a prispôsobovaný zmenám v dátach kontiunálne. Oneskorenie niektorých správ, napríklad o 24 hodín čo je bežná prax pri ETL\footnote{ETL je proces, či architektonický vzor prenosu dát medzi viacerými častami databázových systémov  a aplikáciami, tento vzor je často používaný pre dátové sklady, skratka znamená Extrahuj, Transformuj a Načítaj (angl. Extract, Transform, Load)} procesoch, by mohlo mať nežiadúce následky vo forme skresleného modelu.
+	\item \textit{Horizontálna škálovateľnosť} komponentu, ktorý spracuje prúd dát. Táto vlastnosť podporuje splnenie predchádzajúcich požiadaviek. Pod horizontálnou škálovateľnosťou chápeme to, že je možné zvýšiť výkonnosť celého systému pridaním fyzického uzla bez akýchkoľvek výpadkov. Táto požiadavka implikuje podmienku distribuovanej povahy riešenia.
+\end{itemize}
+
+S cieľom splniť tieto požiadavky sme sa rozhodli použiť nasledujúce programovacie rámce a systémy:
+\begin{itemize}
+	\item \textit{Storm}\footnote{http://storm.apache.org/} je programovací rámec vytvorený pre spracovanie dát v reálnom čase. Storm poskytuje možnosti škálovateľnej architektúry, ktorá je naviac odolná voči chybám na úrovni kvality dát. Programovanie nad týmto rámcom je možné v každom programocom jazyku, ktorý je možné skompilovať do Java bajtkódu a vykonávať v JVM\footnote{Virtuálny stroj Java (angl. Java virtual machine)}. Storm poskytuje aplikovať akýkoľvek programovací vzor, model ktorý poskytuje je vyjadrený, resp. vytvára acyklický orientovaný graf zostrojený z tzv. prameňov a skrutiek.
+	\item \textit{Kafka}\footnote{https://kafka.apache.org/} je distribuovaná platforma pre spracovanie prúdov dát. Kafka je vhodná na budovanie apliikácií, ktoré potrebujú spracovať zdroje dát v reálnom čase a vymieňať tieto dáta medzi aplikáciami. Poskytuje možnosť publikovat (angl. publish) a predplatiť (angl. subscribe) prúdy dát. Kafka je postavená na modely fronty správ, pričom si tieto správy udržiava v pamäti a na disk ich replikuje pre prípad zlyhania.
+\end{itemize}
+
+Nasledujúci obrázok schematicky popisuje architektúru spracovania prúdu dát potrebnú pre správne fungovanie metódy pre klasifikáciu prúdu dát s použitím rozhodovacích stromov.
+\myFigure{images/architecture}{Architektúra potrebná pre klasifikáciu prúdu dát v takmer reálnom čase. Architektúra pozostáva z troch úrovní. V časti predspracovania dát sú dáta zbierané zo zdroja prúdu dát a transformované do potrebnej podoby vhodnej pre ďalší krok. V kroku učenia modelu pre klasifikáciu prúdu dát je semi-automaticky vybraný vhodný algoritmus a atribúty a vytvorený klasifikačný model. Posledný krok obsahuje webovú službu, ktorá poskytuje Web API pre dotazovanie modelu. V tomto kroku tiež prezentujeme výsledky modelu v podobe vizualizácie používateľovi. Kafka je použitá na prenos správ medzi jednotlivými časťami aplikácie, správy sú rozdelené do rôznych tém podľa typu správy.}{architecture}{0.45}{h!}\label{fig:architecture}
+
+\section{Metóda klasifikácie prúdu dát}
+\label{method-klasifikacia-prudu-dat}
+Cieľom je klasifikácia prúdu dát, pričom vytvorený model je pripravený na použitie takmer okamžite po prečítaní prvých vzoriek dát. Model sa tiež prispôsobuje zmenám a do istej miery sezónnym efektom v dátach. Základ metódy pre klasifikáciu sme zvolili state-of-the-art algoritmus rozhodovacích stromov, ktorý používa Hoeffdingovu mieru \citep{domingos2000mining, gaber2005mining, krempl2014open}. Hoeffdingova miera je použitá na rozhodnutie, či bol prečítaný dostatočný počet vzoriek na to aby sa mohol uzol v strome zmeniť na rozhodovací uzol. Táto miera zabezpečuje to, že sa výsledný model asymptoticky blíži svojou kvalitou k tomu, ktorý by vznikol podobnou metódou pre statické dáta. Zároveň má táto miera vlastnosť, že  dôvera v presnosť modelu exponenciálne rastie s lineárnym nárastom počtu prečítaných vzoriek. Hoeffdingova miera je definovaná používateľom parametrom spoľahlivosti $\delta$, kde spoľahlivosť je $(1-\delta) \in <0,1>$. Metrika kvality vzorky $G$ môže byť použitá ľubovoľná, napríklad informačný zisk (angl. information gain).
+\par
+Metóda potrebuje na trénovanie označkované numerické alebo kategorické dáta do viacerých tried. Dáta musia byť vo forme n-tíc $(x_1, x_2, ..., x_n | y)$ kde $x$ sú atribúty vzorky a $y$ skutočná trieda vzorky. Nami vybraný potrebuje len minimum parametrov, ktoré je potrebné nastaviť pre správne fungovanie. Jedným z nich metódy je minimálny počet spracovaných vzoriek pred vytvorením prvého modelu. Týmto je možné minimalizovať prvotnú nepresnosť počiatočného modelu. Výsledný model je jednoduchý na reprezentáciu vďaka možnosti jeho intuitívnej interpretácii rozhodovacím stromom. Rozhodovací strom pozostáva z rozdeľovacích uzlov (angl. split node), tiež niekedy nazývané testovacie uzly, a listov (angl. leaf). V rozhodovacích uzloch sa vykonáva testovanie vzorky a jej posunutie do jednej z nasledujúcich vetiev alebo listu stromu. Ak vzorka narazí na list znamená to, že bola klasifikovaná do istej triedy, ktorú opisuje daný list. Takto vytvorený model je použiteľný na klasifikáciu v rôznych aplikáciách.
+\par
+Problémom rozhodovacích stromov je najmä ich šírka. Klasifikátory, ktoré používajú modely a algoritmy rozhodovacích stromov môžu podľa dát byť priveľmi široké. Tento problém môže mať za následok preučenie (angl. overfitting) modelu, ktorý bude vedieť klasifikovať veľmi dobre trénovacie dáta, resp. dáta zo začiatku prúdu, ale na nových dátach bude veľmi nepresný. Tento problém nastáva najmä pri spojitých číselných atribútoch a ich nerovnomernej distribúcii. Existuje niekoľko známych spôsobov ako sa stýmto nežiadúcim javom vysporiadať, jedným z nich je pre-prerezávanie (angl. pre-pruning) stromu. Tento spôsob aplikujeme aj v našej metóde priadním nulového atribútu $X_0$ do každého uzla, ktorý spočíva v nerozdeľovaní daného uzla. Takže uzol sa stane rozhodovacím iba, ak je metrika $G$, so spoľahlivosťou $1-\delta$, lepšia ako keby sa uzol nezmenil na rozhodovací.
+\par
+V našich experimentoch sa, ale ukázalo, že pre-prerezávanie nieje dostatočný spôsob pre redukciu šírky stromu. Navrhujeme preto použiť metódy pre výber významných atribútov. Znamená to teda, že nebudú použité všetky atribúty pre učenie modelu a jeho následné použitie. Na takúto významovú analýzu je možné použiť napríklad náhodné lesy. Náhodné lesy vytvárajú veľa jednoduchých stromov, kde každý strom obsahuje práve jeden rozhodovací uzol. Následné sa zvolenou metrikou vyberú najvýznamnejšie atribúty a tie budú použité pre trénovanie a použitie klasifikátora. Okrem použitia náhodných lesov navrhujeme použiť histogrami pre spojité numerické atribúty s cieľom redukovať šírku stromu.
+\par
+Nami navrhovaná metóda sa musí vysporiadať so zmenami v dátach, pretože tie nesú v sebe takmer všetky prúdy dát. Zmeny môžu mať rôzny charakter, napríklad náhly kedy zmena nastane nečakane alebo postupný kedy sa zmena deje dlhú dobu a pomaly. Výsledný model musí pre udržanie svojej presnosti zohladniť tieto zmeny. Metóda používa algoritmus \textit{ADWIN} z anglického Adaptive Windowing \citep{Hutchison2009}. Tento algoritmus nepožaduje žiadne nastavenia parametrov používateľom ako napríklad veľkosť posuvného okna. Jediným parametrom je hodnota istoty $\delta$ s akou bude algoritmus detekovať zmeny v prúde dát. Myšlienka ADWIN spočíva v tom, že nenenastala žiadna zmena v priemernej hodnote vybranej metriky v okne. Ak je detekovaná zmena, v uzle začne narastať alternujúci podstrom. Tento podstrom musí spracovať definovaný minimálny počet vzoriek. Potom, ak je kvalita podstromu vyššia ako kvalita podstromu, z ktorého začal narastať, starý podstrom je nahradený alternujúcim podstromom. Naraz môže existovať niekoľko alternujúcich podstromov, pričom môže nastať situácia kedy ani jeden z nich nebude mať vyššiu kvalitu a nesplní Hoeffdingovu mieru preto aby nahradil starý podstrom. Výsledok tohto algoritmu chceme detailne prezentovať používateľovi vo forme vizualizácie, ktorá je detailnejšie popísaná v nasledujúcej podkapitole. 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Prezentacia vysledkov pouzivatelovi %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Prezentácia výsledkov používateľovi}
+\label{my-method-prezentacia-vysledkov}
+V situácii keď potrebuje doménovy expert vytvoriť klasifikačný model s použitím dát reálneho sveta, je často potrebná najprv detailná znalosť dát, ktorú doménový expert, predpokladáme má.  Následne preto, aby vedel vytvoriť správny model potrebuje mať detailné znalosti o fungovaní klasifikačných metód a algoritmov. Cieľom našej metódy je odbremeniť experta od nutnosti mať detailné znalosti o fungovaní modelu a algoritmov. Zameriavame sa teda na prezentáciu dôležitých informácií, ktoré potrebuje pre správne pochopenie modelu a následné rozhodnutia. Výber atribútov a algoritmov, ktoré budú použité na trénovanie modelu je bez nutnosti interakcie používateľa v zmysle nastavovania parametrov a výberu metódy. 
+\par
+Pretože používateľ nemusí mať detailné znalosti o fungovaní algoritmov a klasifikačných metód, je dôležité vysvetlenie výsledného modelu. Znamená to, že je dôležité aby pre používateľa nebol vzniknutý model len čierna skrinka (angl. black-box), ktorá s nejakou úspešnosťou dokáže klasifikovať prúdy dát. Navrhujeme preto vizualizáciu výsledného modelu. Vizualizácia je vo forme rozhodovacieho stromu, ktorý je jednoduchý na pochopenie aj bez predchádzajúcich znalostí o rozhodovacích stromov \citep{nguyen2015survey}. Sústreďujeme sa tiež na zobrazenie zmien (angl. concept drift) v dátach resp. zmenách, ktoré sa odzrkadlia aj v modely. Zmeny samotného modelu vizualizujeme ako animáciu, ktorú je možné spustiť a pozorovať vývoj stromu. Ďalej poskytujeme náhľad vo forme čiarového grafu na kvalitu alternujúcich podstromov, ktoré boli vytvorené pri detekovaní zmeny. Na nasledujúcom obrázku je zobrazený prvý prototyp vizualizácie modelu rozhodovacieho stromu, zmeny sú vizualizované pomocou animácie.
+\myFigure{images/exp-vis-prototype}{Prototyp vizualizácie modelu rozhodovacieho stromu s použitím Hoeffdingovej miery. Veľkosť rozhodovacích uzlov znázorňuje počet potrebných vzoriek na výber najlepšieho atribútu, čím väčší je kruh, tým viac vzoriek bolo potrebných pre splnenie Hoeffdingovej miery. S vizualizáciou je možné interagovať myšou.}{exp-vis-prototype}{0.35}{h!}\label{fig:exp-vis-prototype}
+Pomocou týchto vizualizácií chceme prezentovať výsedky našej klasifikačnej metódy používateľovi. Prezentované výsledky by mali byť jednoduché na pochopenie aj bez detailných znalostí o fungovaní metódy a algoritmov. Overenie použiteľnosti a miery pochopenia prezentovaných výsledkov overujeme detailnými používateľskými štúdiami a vyhodnotením tromi doménovými expertami (majú znalosti o fungovaní metódy a algoritmov). 
+
+
+\section{Vyhodnotenie a experimenty}
+Pre kvantifikovanie správneho fungovania nami navrhovanej metódy navrhujeme viaceré experimenty. Prvým z experimentov je vyhodnotenie integrácie časti spracovania prúdu dát s našou metódou. Pri tomto vyhodnocovaní sa budeme pozerať na výkonnostné metriky, ktoré hovoria o priepustnosti a výkone tejto časti aplikácie. Zaujíma nás hlavne odolnosť voči chýbam, spracovanie v reálnom čase a zaťaženie procesoru a pamäte v závislosti na objeme dát.
+\par
+Vyhodnotenie samotnej metódy pre klasifikáciu prúdu dát nás zaujímajú bežné metriky používané pri vyhodnocovaní modelov strojové učenie, ako napríklad presnosť (angl. precision) a pokrytie (angl. recall). Keďže ide o klasifikovanie prúdu dát, zameriavame sa tiež na nasledujúce metriky:
+\begin{itemize}
+	\item \textit{Kappa štatistiky}, ktoré dobre vyjadrujú presnosť klasifikátora nestabilné prúdy dát.
+	\item \textit{Najprv test-potom-trénovanie} (angl. Test-Then-Train alebo Prequential) je metrika používaná pre meranie výkonnosti klasifikátorov, ktoré sa vyvíjajú v čase.
+\end{itemize}
+Pri vyhodnocovaní klasifikačnej metódy sa tiež pozeráme na vhodnosť výberu rôznych algoritmov pre výber atribútov, detekcie zmien (angl. concept drift) a samotného klasifikačného algoritmu.
+\par
+Vysokú pozornosť venujeme vyhodnoteniu prezentovaných výsledkov používateľovi. Najprv robíme vyhodnotenie fungovania celej aplikácie ako celku s tromi expertami, ktorí majú detailné znalosti o fungovaní metód a algoritmov strojového učenia. Ďalej navrhujeme experiment vo forme používateľskej štúdie. Používateľská štúdia môže prebiehať v kontrolovanom, ale aj v "domácom" prostredí. Počas tejto štúdie budú účastnici vykonávať definované úlohy s cieľom zmerať a kvantifikovať ich výkonnosť a vôbec schopnosť splniť stanovené úlohy. Tieto úlohy môžu byť od jednoduchých ako odčítanie hodnotu z grafu, až po komplexné ako zistiť počet signifikantných zmien modelu a ich čas kedy nastali, či krátke slovná reprezentácia fungovania modelu. Prvé výsledky nami navrhovanej metódy sú na nasledujúcich dvoch grafoch. Zaiaľ sme nerealizovali experiment používateľskej štúdie.
+\myFigure{images/exp-vis-concepts}{Na grafe je znázornený vývoj zmien v synteticky generovanom prúde dát. Každá zmena reprezentuje vznik alternujúceho podstromu.}{exp-vis-concepts}{0.5}{h!}\label{fig:exp-vis-concepts}
+\myFigure{images/exp-vis-errors}{Graf zobrazuje vývoj chyby modelu a alternujúceho podstromu. Je možné pozorovať, že síce nastane moment, kedy je alternujúci podstrom kvalitnejší ako pôvodný, nikdy nesplní Hoeffdingovu mieru a teda nenahradí starý podstrom. Tento jav je spôsobený generovaním syntetického prúdu dát. Preto bude nutné v ďalších experimentoch použiť dáta reálneho sveta.}{exp-vis-errors}{0.5}{h!}\label{fig:exp-vis-errors}
+
+V tejto kapitole navrhujeme metódu pre klasifikáciu prúdu dát. Metóda poskytuje iba jeden voliteľný parameter, ktorý musí nastaviť používateľ, hodnotu istoty $\delta$. Parameter reprezentuje istotu $1-\delta$, že bude výsledný model identický stým, ktorý by vznikol použitím tradičnej metódy. Cieľom metódy je, že používateľ nemusí mať znalosti o fungovaní klasifikačných algoritmov, ale je schopný použíť v praxi nami navrhovanú metódu. Naviac, výsledná model reprezentujeme vo forme vizualizácie, ktorý má pomôcť vysvetliť fungovanie modelu.
+
+Kladieme si teda nasledujúce hypotézy:
+\begin{hypothesis}{Naša metóda je schopná so stanovenou istotou klasifikovať prúdy dát a zároveň poskytuje výsledky v reálnom čase.}
+\end{hypothesis}
+\begin{hypothesis}{Metóda je ľahká na použitie a interpretované výsledky sú jednoduché na pochopenie pre doménového experta bez detailnej znalosti o fungovaní modelu.}
+\end{hypothesis}
+\begin{hypothesis}{Dokážeme zmysluplne a pochopiteľne, pre doménového experta, interpretovať blížiacu sa zmenu v uzle stromu a tiež zobraziť históriu zmien modelu.}
+\end{hypothesis}
+
+
+
+
+
