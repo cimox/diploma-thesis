@@ -49,7 +49,7 @@ Pri dolovaní z prúdov dát (angl. data stream mining) je potrebné aby algorit
 \end{itemize}
 
 % Dolovanie a extrakcia informacii
-\paragraph{Spracovanie, dolovanie a analýza informácií} 
+\paragraph{Spracovanie, dolovanie a analýza prúdu dát} 
 Problematika spracovania, dolovania a analýzy v statickej kolekcii dát bola študovaná niekoľko dekád. Zvýšenú pozornosť začala odborná verejnosť venovať pri aplikovaní týchto úloh na prúdy dát. Niektorým z týchto úloh sa venujeme podrobne v nasledujúcich podkapitolách:
 \begin{itemize}
 	\item \textit{Klastrovanie}, existuje niekoľko výskumov, ktoré sa venovali špeciálne klastrovaniu implementovaním napríklad k-mediánu a inkrementálnych algoritmov.
@@ -58,7 +58,14 @@ Problematika spracovania, dolovania a analýzy v statickej kolekcii dát bola š
 	\item \textit{Analýza časových radov použitím symbolickej} reprezentácie časových radov v prúde dát. Takáto reprezentácia nám umožňuje redukciu veľkosti prenášaných dát. Táto technika pozostáva z dvoch hlavných krokov, aproximácia po častiach a následná transformácia výsledku do diskrétnych veličín.
 \end{itemize}
 
-%TODO: pridat CRISP
+% Evaluacia
+\paragraph{Evaluácia} modelov vytvorených nad prúdmi dát je základná a dôležitá úloha pre meranie kvality modelu. Toto so sebou prináša výzvy, pretože prúdy dát sú potenciálne nekončné, evaluáciu modelov je potrebné vykonávať online zatiaľ čo dáta často vytvárajú problémy, napríklad nerovnomerné rozdelenie tried v prúde dát. Potom, tradičné techniky evaluácie známe z dávkových algoritmov pre analýzu dát, nie sú použiteľné pre evaluáciu prúdov dát. \citet{bifet2015efficient} hovoria o troch hlavných mylných prístupoch k evaluácii prúdu dát:
+\begin{itemize}
+	\item \textit{McNemarov test} a jeho použitie na pre štatistické rozlíšenie kvality dvoch klasifikátorov. Aj napriek štatisticky signifanktnému rozdielu medzi klasifikátormi tento test nieje vhodný pre prúdy dát, pretože aj keď je model vytvorený rovnakým algoritmom, väčšina algoritmov je inicializovaná alebo používa nejakú náhodnú zložku. To môže viesť k zavádzajúcim výsledkom pri použití tohto testu.
+	\item \textit{Rozdeľovanie množiny dát} do trénovacej a testovacej množiny vedie k nemožnosti rozoznať výkonnosť rôznych klasifikátorov. Je to z dôvodu, že v dátach sa môžu objavovať napríklad zmeny, ktoré budu skreslené rozdeľovaním alebo vzorkovaním dát.
+	\item \textit{Väčšina tried v posuvnom okne} môže spôsobiť pozitívne $k$ štatistiky a tiež pozitívne výsledky harmonického priemeru pre niektoré periódy prúdu dát.
+\end{itemize}
+\citet{bifet2015efficient} odporúčajú použitie nasledujúcich metód pre evaluáciu v kontexte prúdov dát: \textit{Najprv testuj-potom-trénuj} (angl. Test-Then-Train alebo tiež Prequential) spočíva v myšlienke, že každá vzorka z prúdu dát je použitá najprv na testovanie a potom na trénovanie modelu. Keďže modely vytvorené nad prúdmi dát by mali byť schopné poskytnúť predikcie okamžite a v reálnom čase, tento prístup by nemal výrazne ovplyvniť výkon metódy. Obmenou tohto prístupu môže byť evaluácia na nejakom posuvnom okne, ktoré môže byť vyberané napríklad algoritmom $ADWIN$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,10 +91,10 @@ Výskumné práce sa tiež venovali adaptívnym kontinuálnym dopytom nad prúdm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Detekcia zmien                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%TODO: doplnit typy driftov
 \section{Detekcia zmien}
-Detekcia zmien (angl. concept drift) zohráva, v dnešnom rýchlo sa meniacom svete, dôležitú úlohu. Zmeny nastávajú veľmi rýchlo a nečakane. Preto stúpa potreba detekcie zmeny a následná správna reakcia, ktorá vyplynie z detekovanej zmeny. Na to aby sme boli schopný na tieto zmeny adekvátne reagovať je potrebné dáta spracovávať tak ako vznikajú a pozerať sa na ne ako na prúd udalostí. Tradičné metódy pre paralelné spracovanie uvažujú len statickú kolekciu dát \citep{tran2014change}. \par
-% TODO: pridat graf, ktory znazornuje rozne zmeny (nahla, inkrementalna, ...)
+Detekcia zmien (angl. concept drift) zohráva, v dnešnom rýchlo sa meniacom svete, dôležitú úlohu. Zmeny nastávajú veľmi rýchlo a nečakane. Preto stúpa potreba detekcie zmeny a následná správna reakcia, ktorá vyplynie z detekovanej zmeny. Na to aby sme boli schopný na tieto zmeny adekvátne reagovať je potrebné dáta spracovávať tak ako vznikajú a pozerať sa na ne ako na prúd udalostí. Tradičné metódy pre paralelné spracovanie uvažujú len statickú kolekciu dát \citep{tran2014change}. Existuje niekoľko typov zmien, ktoré môžu nastať v prúde dát \citep{wadewale2015survey}: \textit{náhla} (angl. sudden), \textit{inkrementálna}, \textit{graduálna}, \textit{opakujúca}, \textit{falošná} a \textit{šum}. Spomenuté zmeny sú zobrazené na obrázku \ref{fig:types-of-concept}.
+\myFigure{images/types-of-drift}{Typy zmien (angl. concept drift) \citep{w
+}.}{test-dia}{0.5}{h!}\label{fig:types-of-concept}
 Detekcia zmeny predstavuje proces identifikácie zmeny aktuálneho stavu modelu voči predchádzajúcemu. Na tento objekt sa pozeráme v rôznom čase. Dôležitý rozdiel medzi zmenou a rozdielom je, že zmena hovorí o prechode modelu do iného stavu, zatiaľ čo rozdiel znamená nepodobnosť v atribútoch dvoch objektov. V kontexte prúdu, detekovanie zmeny je proces segmentácie prúdu udalostí do rôznych segmentov a identifikovanie miest kde sa zmení dynamika prúdu \citep{ross2009online}. Metóda pre detekciu zmien musí riešiť nasledujúce úlohy \citep{tran2014change}: \textit{detekcia zmeny} znamená správnu identifikáciu zmeny a \textit{lokalizácia zmeny} hovorí o identifikovaní momentu kedy zmena nastala. Týmto úloh je potrebné venovať dostatočnú pozornosť, pretože zmeny môžu byť falošné alebo dočasné čo so sebou prináša problém lokalizácie danej zmeny. Ďalší rozdiel, ktorý je potrebné zadefinovať, je medzi rozdiel detekovaním posunu pojmu (angl. concept drift). Pre lepšiu čitateľnosť tohto textu budeme pod pojmom detekcia zmeny, zmena rozumieť posun pojmu. Detekcia concept drift-u sa sústreďuje na označkované dáta, zatiaľ čo detekcia zmeny pracuje s označkovanými rovnako ako s neoznačkovanými dátami. Posun pojmu nazývame tiež časté zmeny v účelovej funkcii modelu, ktorý sa učí online. \par
 
 Metódy pre detekovanie zmien môžme klasifikovať do nasledujúcich prístupov \citep{liu2010mining}: \textit{metódy založené na stave}, \textit{metódy sledujúce trend} a \textit{prahové metódy}. Algoritmus pre detekciu zmien by mal spĺňať aspoň nasledovné požiadavky: \textit{presnosť}, \textit{rýchlosť} a \textit{odpoveď v reálnom čase}. Algoritmus by tiež mal detekovať čo najmenej chybných zmien a čo najviac správnych presných miest zmeny. Algoritmy by mali byť prispôsobené reálnemu prostrediu a spracovaniu prúdov vysokých objemov a rýchlostí. Na obrázku \ref{fig:zmeny-vseobecny-dia} je zobrazený všeobecný diagram pre detekciu zmeny v prúde udalostí.
@@ -180,13 +187,11 @@ $SWEM$ je algoritmus rozšírený z EM algoritmu. Tento algoritmus používa pos
 \par
 Ďalším algoritmom, ktorý vytvára statický model je $GCPSOM$, ktorý je hybridným algoritmom vytvorený z $GSOM$ a $CPSOM$. Algoritmus GSOM je vyvíjajúci sa SOM kde nieje potrebné vopred definovať veľkosť mapy. Mapa GSOM dynamicky rastie podľa hodnoty akumulovaných chýb. CPSOM je bunkový pravdepodobnostný SOM, ktorý používa oslabujúce okno s cieľom redukcie váh neurónov. Teda, GCPSOM má schopnosť dynamického rastu mapy čŕt pre zhlukovanie prúdov dát a udržiavať zhluky tak ako sa prúd vyvíja v čase \citep{nguyen2015survey}.
 
-% TODO: doplnit zhlukovacie metody
 \paragraph{Hierarchické metódy}
+Hierarchické metódy zoskupujú dátové objekty do zhlukov hierarchických stromov. Tieto metódy ďalej rozdeľujeme na aglomeratívne a rozdeľovacie kde dekompozícia hierarchií je formovaná zdola nahovr spájaním alebo zhora nadol rozdeľovaním. Tradičné metódy sú napríklad BIRCH, CURE alebo  ROCK. Metóda CluStream je použiteľná pre prúdu dát pričom rozširuje tradičnú metódu BIRCH. CluStream používa mikro zhluky pre získanie súmárnych informácií o prúde dát. Mikro zhluky sú definované ako rozšírenie funkčných vektorov metódy BIRCH s pridanou časovou zložkou. CluStream si udržuje množinu mikro zhlukov, ak je vytvorený nový mikro zhluk, iný ktorý je outlier je odstránený alebo sú dva podobné mikro zhluky spojené do jedného. Tento algoritmus tiež analyzuje vývoj mikro zhlukov s cieľom odhaliť zmeny v prúde dát \citep{nguyen2015survey}. Algoritmus HPStream je rozšírením algoritmu CluStream, ktorý adresuje problém zhlukovania vysoko dimenzionálných dát. Tento algoritmus sa vysporiadúva s takýmito dátami projekčnou technikou pre výber najlepšieho atribútu pre zhluky. SWClustering je algoritmus, ktorý rieši problém postupnej degradácie algoritmu CluStream, ak beží dlhú dobu. SWClustering vytvára dočasný zhluk čŕt pre posuvné okno. Následne je použitý exponenciálny histogram čŕt zhlukov pre identifikáciu zmien v prúde dát. Tento algoritmus tiež dosahuje lepšiu časovú a pamäťovú efektivitu ako CluStream \citep{han2011data}.
 
 \paragraph{Metódy založené na mriežke}
-
-
-
+rozdeľujú priestor na multi-dimenzionálnu mriežku. Mriežka môže obsahovať veľa buniek, pričom každá môže obsahuje svoj podpriestor a naviac si udržuje sumárne informácie o dátach v podpriestore bunky. Zhluky sú potom identifikované hustými oblasťami v okolí buniek. Známy algoritmus pre zhlukovanie prúdov dát podľa mriežky je CellTree \citep{han2011data}. Algoritmus je inicializovaný rozdelením priestoru do množiny rovnako veľkých buniek. CellTree bol rozšírený na lepšiu verziu Cell*Tree, ktorý používa algoritmus BTree na ukladanie informácií o zhlukoch. Cell*Tree tiež aplikuje starnúci model na zvýraznenie poslednej zmeny v prúde dát.
 
 
 
@@ -229,6 +234,8 @@ Predpokladajme $N$ nezávislých pozorovaní náhodnej premennej $r \in R$ kde $
 \end{align*}
 HT algoritmus používa Hoeffdingovu mieru na výber najmenšieho čísla $N$ - počet vzoriek potrebných v uzle na výber rozdeľovacieho atribútu. Presnejšie, v každom uzle stromu maximalizujeme $G(A_j)$ kde funkcia G predstavuje metriku kvality atribútu $A_j$ vzorky, napríklad informačný zisk. Cieľom je nájsť najmeší počet vzoriek $N$ tak aby bola splnená Hoeffdingova miera. Nech $G(A_a)$ predstavuje atribút s najvyššou hodnotou $G$ a nech $G(A_b)$ je druhý najlepší atribút. Potom ak $G(A_a) - G(A_b) > \epsilon$ môžme s istotou tvrdiť, že rozdiel je väčší ako nula. Následne vyberieme $A_a$ ako najlepší rozdeľovací atribút v danom uzle s istotu $1-\delta$. Jediné dáta, ktoré si potrebuje HT algoritmus ukladať sú postačujúce štatistiky potrebné pre rozhodovanie a výpočet Hoeffdingovej miery, sú to počítadlá $n_ijk$ pre hodnotu $v_j$ atribútu $A_i$ z triedy $y_k$. Slabá stránka tohto algoritmu je v tom, že očakáva na vstupe prúd, ktorý neobsahuje zmeny (angl. concept-drift \citep{domingos2000mining}.
 \par %TODO: pridat HFDT pseudokod
+
+
 Existuje niekoľko modifikácií HT algoritmu. Tá najzákladnejšia je jeho rýchla verzia (angl. Very Fast Decision Trees, VFDT) \citep{domingos2000mining}. Modifkácia HT algoritmu, ktorá sa vie vysporiadať so zmenami v prúde sa nazýva \textit{Rýchly algoritmus pre rozhodovacie stromy adaptujúci sa na zmeny} (angl. Concept-adapting Very Fast Decision Tree, CVFDT \citep{hulten2001mining}. CVFDT používa posuvné okno, pričom nevytvára pri detekovanej zmene nový model. Namiesto toho aktualizuje postačujúce štatistiky v uzloch inkrementovaním počítadiel nových vzoriek a dekrementovaním počítadiel vzoriek, ktoré vypadli z posuvného okna. Teda, ak je v prúde dát zmena, niektoré uzly stromu nemusia viac spĺňať Hoeffdingovu mieru. Keď nastane takáto situácia, alternujúci podstrom začne narastať v uzle, ktorý nesplnil Hoeffdingovu mieru. s novými vzorkami bude alternujúci podstrom rásť, zatiaľ bez toho aby bol použitý v modeli na klasifikáciu. V momente keď sa stane alternujúci podstrom presnejší ako aktuálny, starý podstrom je nahradený alternujúcim podstromom. V algoritme je možné nastaviť hraničnú hodnotu minimálneho počtu vzoriek, ktoré musí alternujúci podstrom spracovať predtým než sa pokusí nahradiť pôvodný \citep{hulten2001mining}.
 \par
 Ďalšou modifikáciou HT je \textit{Adaptívny sa Hoeffdingov strom} (angl. Hoeffding Adaptive Tree) predstavený Bifetom a Gavaladom v 2009. Princíp je veľmi podobný ako CVFDT, ale myšlienka je minimalizovať počet parametrov, ktoré musí používateľ nastaviť (napr. veľkosť okna $W$ je požadovaný parameter CVFDT). Adaptívny HT používa rôzne 	kritéria pre odhad potrebnej veľkosti okna automaticky, napríklad algoritmus \textit{ADWIN}. S použitím tohto kritéria používateľ nemusí zadať parameter veľkosti okna čo je obrovký prínos, pretože potrebná veľkosť sa môže meniť spolu so zmenami v prúde dát. Adaptívny HT s kritériom ADWIN dosahuje v niektorých prípadoch lepšie výsledky ako CVFDT \citep{bifet2009adaptive}.
@@ -236,24 +243,18 @@ Existuje niekoľko modifikácií HT algoritmu. Tá najzákladnejšia je jeho rý
 Existujú aj ďalšie odlišné metódy rozhodovacích stromov, ktoré aplikujú súborové (angl. ensemble) metódy, rôzne klasifikátory v listoch ako napríklad naivný Bayes, či stromy založené na fuzzy logike \citep{aggarwal2014survey}.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                  Evaluacia                    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Evaluácia}
-Evaluácia modelov vytvorených nad prúdmi dát je základná a dôležitá úloha pre idetifikáciu nekvalitných modelov. Toto so sebou prináša výzvy, pretože prúdy dát sú potenciálne nekončné, evaluáciu modelov je potrebné vykonávať online zatiaľ čo dáta často vytvárajú problémy, napríklad nerovnomerné rozdelenie tried v prúde dát.
-% TODO: Dokoncit evaluaciu
-
-
-
-
-
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                Zhodnotenie                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Zhodnotenie}
-%TODO:
+Existuje mnoho problémov analýzy prúdu dát. Väčšina týchto problémov je odvodených od tých z tradičného dávkového spracovania dát. Vďaka tomu tiež väčšina algoritmov na riešenie týchto úloh a problémov rozširuje tradičné algoritmy. Ako napríklad algoritmus rozhodovacích stromov pre klasifikáciu, ktorý používa Hoeffdingovu mieru pre určenie istoty výberu najlepšie atribútu pre vytvorenie rozhodovacieho uzla. Niektoré metódy do istej miery riešia problém zmien v prúde dát, avšak často len pomocou staticky nastavených parametrov používateľom. Tento prístup zlyháva, ak sa menia aj samotné zmeny, čo je častý prípad prúdov reálneho sveta.
+
+
+
+
+
+
+
+
+

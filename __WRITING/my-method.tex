@@ -23,7 +23,7 @@ Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú 
 	\item \textit{Hoeffdingove stromy} a ich rozšírenia, ktoré schopné adaptovať sa na zmeny (angl. concept drift) v dátach \citep{hulten2001mining, bifet2009adaptive}.
 	\item \textit{Bayesová klasifikácia} a jej rozšírenia v podobe Bayesových stromov ukázali použitie najmä pri detekcii anomálií v dátach \citep{hill2007real}.
 	\item \textit{Neurónové siete a evolučné metódy}. Evolučné programovanie našlo uplatnenie v stochastických optimalizačných problémoch, vlastnosti evolučných algoritmov môžu byť tiež aplikované na spracovanie prúdu dát s cieľom vysporiadať sa so zmenami v dátach. Experimentálne použitie neurónových sietí ukázalo porovnateľné výsledky s rozhodovacími stromami.
-	\item \textit{Súborové metódy} (angl. ensemble), ktoré aplikujú vrecovanie (angl. bagging) a zvyšovanie (angl. boosting) s cieľom zvýšenia presnosti modelu pomocou nájdenia optimálneho nastavenia a kombinácie viacerých klasifikátorov. Náhodné lesy sú typickým príkladom súborových metód, dokážú sa vysporiadať so zmeny v dátach, pričom časová náročnosť spracovania vzorky je $O(1)$ %TODO: citovat nahodne lesy .
+	\item \textit{Súborové metódy} (angl. ensemble), ktoré aplikujú vrecovanie (angl. bagging) a zvyšovanie (angl. boosting) s cieľom zvýšenia presnosti modelu pomocou nájdenia optimálneho nastavenia a kombinácie viacerých klasifikátorov. Náhodné lesy sú typickým príkladom súborových metód, dokážú sa vysporiadať so zmeny v dátach, pričom časová náročnosť spracovania vzorky je $O(1)$ \citep{abdulsalam2011classification}.
 	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
 \end{itemize}
 
@@ -59,9 +59,7 @@ S cieľom splniť tieto požiadavky sme sa rozhodli použiť nasledujúce progra
 \end{itemize}
 
 Nasledujúci obrázok schematicky popisuje architektúru spracovania prúdu dát potrebnú pre správne fungovanie metódy pre klasifikáciu prúdu dát s použitím rozhodovacích stromov.
-%TODO obrazok spracovanie, kafka + storm
-
-
+\myFigure{images/architecture}{Architektúra potrebná pre klasifikáciu prúdu dát v takmer reálnom čase. Architektúra pozostáva z troch úrovní. V časti predspracovania dát sú dáta zbierané zo zdroja prúdu dát a transformované do potrebnej podoby vhodnej pre ďalší krok. V kroku učenia modelu pre klasifikáciu prúdu dát je semi-automaticky vybraný vhodný algoritmus a atribúty a vytvorený klasifikačný model. Posledný krok obsahuje webovú službu, ktorá poskytuje Web API pre dotazovanie modelu. V tomto kroku tiež prezentujeme výsledky modelu v podobe vizualizácie používateľovi. Kafka je použitá na prenos správ medzi jednotlivými časťami aplikácie, správy sú rozdelené do rôznych tém podľa typu správy.}{architecture}{0.45}{h!}\label{fig:architecture}
 
 \section{Metóda klasifikácie prúdu dát}
 \label{method-klasifikacia-prudu-dat}
