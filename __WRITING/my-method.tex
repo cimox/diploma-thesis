@@ -5,19 +5,26 @@
 % Uvod %
 %%%%%%%%
 
-Klasifikácia dát je dobre známa úloha a problém dolovania, analýzy a spracovania dát. Tento problém bol veľmi dobre a podrobne študovaný pri spracovaní statickej kolekcie údajov. Pri tomto prístupe sú všetky dáta v pamäti počítača. Vybraný algoritmus potom môže pomerne "lacno" prečítať celú množinu niekoľko krát s cieľom zvýšenia presnosti a kvality výsledného modelu. Tento prístup nieje aplikovateľný pre klasifikáciu prúdov dát z nasledujúcich dôvodov:
-
+Klasifikácia dát je dobre známa úloha a problém dolovania, analýzy a spracovania dát. Tento problém bol veľmi dobre a podrobne študovaný pri spracovaní statickej kolekcie údajov. Pri tomto prístupe sú všetky dáta v pamäti počítača. Vybraný algoritmus potom môže pomerne "lacno" prečítať celú množinu niekoľko krát s cieľom zvýšenia presnosti a kvality výsledného modelu. Tento prístup nie je aplikovateľný pre klasifikáciu prúdov dát z nasledujúcich dôvodov:
 \begin{itemize}
-	\item \textit{Prúd dát je potenciálne nekonečná sekvencia udalostí}, ktoré môžu byť správne alebo chybne usporiadané v závislosti od spoľahlivosti zdroja dát.
+	\item \textit{Prúd dát je potenciálne nekonečná sekvencia udalostí}, ktoré môžu byť správne alebo chybne usporiadané v závislosti od spoľahlivosti zdroja dát. Hlavný problém tu predstavuje to, že prúd je nekonečná sekvencia udalostí. Závažnosť problému usporiadania daných udalostí, či vozriek závisí od konkrétnej úlohy analýzy prúdu dát.
 	\item \textit{Obmedzená pamäť}, nieje možné všetky dáta zbierať a ukladať do pamäti. Toto obmedzenie vyplýva z prvej vlastnosti prúdov dát.
-	\item \textit{Model pre klasifikácii prúdov musí byť ihneď pripravený k použitiu.} 
+	\item \textit{Model pre klasifikácii prúdov musí byť ihneď pripravený k použitiu.} Znamená to, že hneď po tom ako sú spracované prvé dáta z prúdu, model je pripravený na použitie, napríklad klasifikovať iný prúd dát.
 	\item \textit{Prúdy dát takmer vždy v sebe nesú zmeny} (angl. concept drift), na ktoré sa musí vedieť klasifikátor adaptovať. Vlasnosť klasifikačných modelov vysporiadať sa so zmenami považujeme za rozhodujúcu pri hodnotení ich kvality a použiteľnosti v praxi. Preto sa aj nami navrhovaná metóda sústreďuje na vytvorenie metódy, ktorá je schopná adaptácie na zmeny a ich adekvátne interpretovanie používateľovi. Zmeny v dátach môžu byť náhle, postupné ale môžu predstavovať aj očakávané sezónne vplyvy (napr. obdobie Vianoc z pohľadu počtu nákupov internetového obchodu).
 \end{itemize}
-
 Problém klasifikácie a jej definícia je podrobne opísaný v kapitole \ref{ulohy-klasifikacia}. V skratke, cieľom je nájsť funkciu $y = f(x)$, kde $y$ je skutočná trieda objektu/vzorky z prúdu dát a $x$ sú atribúty danej vzorky. Potom vieme pomocou funkcie $f(x)$ klasifikovať nové vzorky do triedy $y'$ s istou pravdepodobnosťou.
 
 \par
+Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/
+} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
+\begin{itemize}
+	\item Detekcia podvodov pri finačných prevodoch. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
+	\item Klasifikácia zákaznika na webe. Toto má zmysel napríklad pre obchody ako Amazon.com. Pre takéto stránky je prínosné vedieť klasifikovať, či je navštevník webu potenciálny zakazník alebo má tendenciu odísť. Na základe týchto zistení môže majiteľ stránky vytvoriť ponuku pre zákazníka s cieľom udržať ho na stránke.
+	\item Klasifikácia sieťovej prevádzky s cieľom klasifikovať potenciálne pokusy o útoky na sieť. Cieľom takejto úlohy je eliminácia útoku a stým spojená minimalizácia prestoja (angl. downtime) siete a nákladov spôsobených škodami z úspešného útoku.
+\end{itemize}
+Pre všetky vyššie opísané prípady použitia má zmysel zohľadniť zmeny v prúde dát v modeli. Pretože, ak sa napríklad mení správanie používateľa na webe v závislosti od zmien na stránke, napríklad v podobe zmeny dizajnu, chceme tieto zmeny odzrkadliť aj vo výslednom modeli. Rovnako ma zmysel tieto zmeny aj interpretovať prostredníctvom vizualizácie používateľovi.
 
+\par
 Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú podrobne opísané v \ref{ulohy-klasifikacia}, pre klasifikáciu prúdov dát:
 \begin{itemize}
 	\item \textit{Hoeffdingove stromy} a ich rozšírenia, ktoré schopné adaptovať sa na zmeny (angl. concept drift) v dátach \citep{hulten2001mining, bifet2009adaptive}.
@@ -25,15 +32,6 @@ Existuje niekoľko dobre známych a používaných metód, niektoré z nich sú 
 	\item \textit{Neurónové siete a evolučné metódy}. Evolučné programovanie našlo uplatnenie v stochastických optimalizačných problémoch, vlastnosti evolučných algoritmov môžu byť tiež aplikované na spracovanie prúdu dát s cieľom vysporiadať sa so zmenami v dátach. Experimentálne použitie neurónových sietí ukázalo porovnateľné výsledky s rozhodovacími stromami.
 	\item \textit{Súborové metódy} (angl. ensemble), ktoré aplikujú vrecovanie (angl. bagging) a zvyšovanie (angl. boosting) s cieľom zvýšenia presnosti modelu pomocou nájdenia optimálneho nastavenia a kombinácie viacerých klasifikátorov. Náhodné lesy sú typickým príkladom súborových metód, dokážú sa vysporiadať so zmeny v dátach, pričom časová náročnosť spracovania vzorky je $O(1)$ \citep{abdulsalam2011classification}.
 	\item Ďalšie metódy sú napríklad: \textit{k-najbližších susedov} a \textit{metóda podporných strojov}.
-\end{itemize}
-
-Klasifikácia prúdov dát má zmysel často pre doménových expertov, ktorí potrebujú vytvárať detailné analýzy, či predikčné a klasifikačné modely. Pod pojmom doménový expert rozumieme človeka, ktorý rozumie analyzovaným dátam a pracuje s bežnými analytickými nástrojmi ako napríklad Google Analytics\footnote{https://www.google.com/analytics/
-} alebo IBM SPSS\footnote{https://www-01.ibm.com/software/sk/analytics/spss/}. Použitie klasifikácie prúdov dát má zmysel v mnohých oblastiach a prípadoch použitia:
-
-\begin{itemize}
-	\item Detekcia podvodov pri finačných prevodoch. Je dôležité detekovať falošnú, či podvodnú platbu platobnou kartou takmer v reálnom čase pre minimalizáciu nákladov vzniknutých s jej neskorím riešením. Vytvorenie klasifikátora nad prúdmi dát ma zmysel práve preto, že transakcie predstavujú prúd dát, ktorý v sebe často nesie sezónne vzory a zmeny, na ktoré sa nevedia dobre adaptovať tradičné metódy.
-	\item Klasifikácia zákaznika na webe. Toto má zmysel napríklad pre obchody ako Amazon.com. Pre takéto stránky je prínosné vedieť klasifikovať, či je navštevník webu potenciálny zakazník alebo má tendenciu odísť. Na základe týchto zistení môže majiteľ stránky vytvoriť ponuku pre zákazníka s cieľom udržať ho na stránke.
-	\item Klasifikácia sieťovej prevádzky s cieľom klasifikovať potenciálne pokusy o útoky na sieť. Cieľom takejto úlohy je eliminácia útoku a stým spojená minimalizácia prestoja (angl. downtime) siete a nákladov spôsobených škodami z úspešného útoku.
 \end{itemize}
 
 V tejto práci preto navrhujeme metódu pre klasifikáciu prúdu dát. Navrhnutá metóda môže byť použitá na akúkoľvek úlohu klasifikácie. Navrhovaná metóda používa techniku rozhodovacích stromov, je aplikovateľná na prúdy dát a model je takmer okamžite pripravený na použitie (záasadný rozdiel oproti tradičným metódam). Kladieme dôraz na spracovanie v reálnom čase, ktoré je najzákladnejšie pri spracovaní prúdov dát. Veľkú pozornosť pritom mierime na schopnosť adaptácie metódy na zmeny v dátach. Výsledný model aj s príslušnými zmenami, ktoré v dátach a modely nastali, prezentujeme používateľovi vo výslednej webovej aplikácii prostredníctvom vizualizácie. Okrem toho je našim cieľom navrhnúť metódu tak aby používateľ, ktorý je najčastejšie doménový expert, nemusel mať detailné znalosti o vnútornom fungovaní metódy.
