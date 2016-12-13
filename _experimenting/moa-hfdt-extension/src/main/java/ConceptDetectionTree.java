@@ -17,6 +17,7 @@ public class ConceptDetectionTree extends HoeffdingTree {
     private static final long serialVersionUID = 1L;
 
     private PrintWriter conceptFileWriter;
+    private LearningNode firstAltTree;
 
     ConceptDetectionTree(PrintWriter conceptFileWriter) {
         this.conceptFileWriter = conceptFileWriter;
@@ -164,10 +165,11 @@ public class ConceptDetectionTree extends HoeffdingTree {
             if (this.ErrorChange == true) {//&& this.alternateTree == null) {
                 //Start a new alternative tree : learning node
                 this.alternateTree = ht.newLearningNode();
+
                 //this.alternateTree.isAlternateTree = true;
                 ht.alternateTrees++;
 
-                this.conceptPrintWriter.print("\"" + ht.alternateTrees + "\", \"" + inst + "\", ");
+//                this.conceptPrintWriter.print("\"" + ht.alternateTrees + "\", \"" + inst + "\", ");
             } // Check condition to replace tree
             else if (this.alternateTree != null && ((NewNode) this.alternateTree).isNullError() == false) {
                 if (this.getErrorWidth() > 300 && ((NewNode) this.alternateTree).getErrorWidth() > 300) {
@@ -177,7 +179,12 @@ public class ConceptDetectionTree extends HoeffdingTree {
                     //if (gNumAlts>0) fDelta=fDelta/gNumAlts;
                     double fN = 1.0 / ((double) ((NewNode) this.alternateTree).getErrorWidth()) + 1.0 / ((double) this.getErrorWidth());
                     double Bound = (double) Math.sqrt((double) 2.0 * oldErrorRate * (1.0 - oldErrorRate) * Math.log(2.0 / fDelta) * fN);
-                    this.conceptPrintWriter.println("\"" + Bound + "\", \"" + oldErrorRate + "\", \"" + altErrorRate + "\"");
+
+                    // Print progress to file
+                    this.conceptPrintWriter.print("\"" + ht.alternateTrees + "\", \"" + inst + "\", ");
+                    this.conceptPrintWriter.println("\"" + Bound + "\", \"" + oldErrorRate + "\", \""
+                            + altErrorRate + "\", \"" + "aa" + "\"");
+
                     if (Bound < oldErrorRate - altErrorRate) {
                         // Switch alternate tree
                         this.conceptPrintWriter.println("Old tree replaced with alternating tree. Instance: "

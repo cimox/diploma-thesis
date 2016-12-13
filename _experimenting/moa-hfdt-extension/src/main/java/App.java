@@ -18,7 +18,7 @@ public class App {
 
 //        Experiment exp = new Experiment();
         ExperimentConceptDetection exp = new ExperimentConceptDetection();
-        exp.run(15000001, true);
+        exp.run(150001, true);
     }
 
     private static class Experiment {
