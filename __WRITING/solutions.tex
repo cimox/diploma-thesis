@@ -232,8 +232,6 @@ Predpokladajme $N$ nezávislých pozorovaní náhodnej premennej $r \in R$ kde $
 \end{align*}
 HT algoritmus používa Hoeffdingovu mieru na výber najmenšieho čísla $N$ - počet vzoriek potrebných v uzle na výber rozdeľovacieho atribútu. Presnejšie, v každom uzle stromu maximalizujeme $G(A_j)$ kde funkcia G predstavuje metriku kvality atribútu $A_j$ vzorky, napríklad informačný zisk. Cieľom je nájsť najmeší počet vzoriek $N$ tak aby bola splnená Hoeffdingova miera. Nech $G(A_a)$ predstavuje atribút s najvyššou hodnotou $G$ a nech $G(A_b)$ je druhý najlepší atribút. Potom ak $G(A_a) - G(A_b) > \epsilon$ môžme s istotou tvrdiť, že rozdiel je väčší ako nula. Následne vyberieme $A_a$ ako najlepší rozdeľovací atribút v danom uzle s istotu $1-\delta$. Jediné dáta, ktoré si potrebuje HT algoritmus ukladať sú postačujúce štatistiky potrebné pre rozhodovanie a výpočet Hoeffdingovej miery, sú to počítadlá $n_ijk$ pre hodnotu $v_j$ atribútu $A_i$ z triedy $y_k$. Slabá stránka tohto algoritmu je v tom, že očakáva na vstupe prúd, ktorý neobsahuje zmeny (angl. concept-drift \citep{domingos2000mining}.
 \par %TODO: pridat HFDT pseudokod
-
-
 Existuje niekoľko modifikácií HT algoritmu. Tá najzákladnejšia je jeho rýchla verzia (angl. Very Fast Decision Trees, VFDT) \citep{domingos2000mining}. Modifkácia HT algoritmu, ktorá sa vie vysporiadať so zmenami v prúde sa nazýva \textit{Rýchly algoritmus pre rozhodovacie stromy adaptujúci sa na zmeny} (angl. Concept-adapting Very Fast Decision Tree, CVFDT \citep{hulten2001mining}. CVFDT používa posuvné okno, pričom nevytvára pri detekovanej zmene nový model. Namiesto toho aktualizuje postačujúce štatistiky v uzloch inkrementovaním počítadiel nových vzoriek a dekrementovaním počítadiel vzoriek, ktoré vypadli z posuvného okna. Teda, ak je v prúde dát zmena, niektoré uzly stromu nemusia viac spĺňať Hoeffdingovu mieru. Keď nastane takáto situácia, alternujúci podstrom začne narastať v uzle, ktorý nesplnil Hoeffdingovu mieru. s novými vzorkami bude alternujúci podstrom rásť, zatiaľ bez toho aby bol použitý v modeli na klasifikáciu. V momente keď sa stane alternujúci podstrom presnejší ako aktuálny, starý podstrom je nahradený alternujúcim podstromom. V algoritme je možné nastaviť hraničnú hodnotu minimálneho počtu vzoriek, ktoré musí alternujúci podstrom spracovať predtým než sa pokusí nahradiť pôvodný \citep{hulten2001mining}.
 \par
 Ďalšou modifikáciou HT je \textit{Adaptívny sa Hoeffdingov strom} (angl. Hoeffding Adaptive Tree) predstavený Bifetom a Gavaladom v 2009. Princíp je veľmi podobný ako CVFDT, ale myšlienka je minimalizovať počet parametrov, ktoré musí používateľ nastaviť (napr. veľkosť okna $W$ je požadovaný parameter CVFDT). Adaptívny HT používa rôzne 	kritéria pre odhad potrebnej veľkosti okna automaticky, napríklad algoritmus \textit{ADWIN}. S použitím tohto kritéria používateľ nemusí zadať parameter veľkosti okna čo je obrovký prínos, pretože potrebná veľkosť sa môže meniť spolu so zmenami v prúde dát. Adaptívny HT s kritériom ADWIN dosahuje v niektorých prípadoch lepšie výsledky ako CVFDT \citep{bifet2009adaptive}.
@@ -249,8 +247,23 @@ Existuje mnoho problémov analýzy prúdu dát. Väčšina týchto problémov je
 
 
 
+\chapter{Interpretácia a vysvetlenie výsledkov analytických úloh}
+Vysvetlenie a prezentacia analytických modelov je kritickým komponentom pri procese analýzy dát. Je dôležité aby používateľ nevidel výsledný model len ako čiernu skrinku, ale aby bol schopný pochopiť čo viedlo k vzniku modelu. Lepšie povedané, cieľom je čo možno najjednoduchšie vysvetlenie fungovania modelu bez nutnosti všetkých detailov o fungovaní algoritmu, ktorý tvorí model. Dobrým príkladom môže byť model rozhodovacích stromov. Tento model je jednodudcho a intuitívne interpretovateľný, zatiaľ čo nieje potrebná detailná znalosť rôznych algoritmov rozhodovacích stromov.
+\par
+Ďalšia neoddeliteľná súčasť prezentácie modelu je jeho vizuálna reprezentácia relevantná pre pochopenia používateľom. cieľom podobných vizualizácií je nájsť rovnováhu medzi vnímaním a poznávaním a vyžiť tak všetky možnosti ľudského mozgu. Správne vysvetlenie modelu tiež zvyšuje používateľovú dôveryhodnosť vo vytvorený model \citep{Demsar2014, Barlow2001}. 
+\par
+Prúd dát môže byť chápaný ako sekvencia pozorovaní v čase. Výskumy zamerané na techniky vzorkovania zobrazujú dáta ako prechodný alebo dočašný komponent (angl. temporal component). V tomto kontexte vizualizácia predstavuje \textit{sumarizáciu} \citep{Demsar2014}. Výzvou je zobrazovať prechodný komponent v 2D vizualizácií bez animácie. Zobrazovanie zmien (angl. concept drift) je další parameter, ktorý robí vizualízaciu a teda aj prezentáciu a vysvetlenie celého modelu náročnou úlohou. Aj v prípade, ak dokážeme efektívne sumarizovať dáta a zobraziť v objavené vzory, na konci stále máme problém vizualizovať zmeny. Možnosťou je použiť viac paralelných vizualizácií pre každú zmenu. Problém tohto prístupu je, že s narastajúcim počtom zmien začne byť vizualizácia neprehľadná a vediet k fenoménu známeho pod pojmom \textit{neviditeľnosť zmeny} (angl. change blindness) \citep{Demsar2014}.
+\par
+Výzvou preto ostáva jednoduchá interpretácia modelu a vizualizácia jeho zmeny v čase tak aby táto celková prezentácia ostala jednoduchá na pochopenia pre používateľa \citep{Demsar2014, Yao2013}. Na nasledujúcich obrázkoch sú znázornené vizualizácie, ktoré majú snahu vizualizovať zmenu v prúde dát a modeloch vytvorených nad prúdom dát.
+\myFigure{images/vis-concept-distribution}{Distribúcia zmien v prúde dát \citep{Yao2013}.}{vis-concept-distribution}{0.75}{h!}\label{fig:vis-concept-distribution}
 
-\chapter{Interpretácia výsledkov analytických úloh}
+\myFigure{images/vis-concept-transformation-map}{Mapa transformácií zmien vizualizovaná ako stavový automat \citep{Yao2013}.}{vis-concept-transformation-map}{0.65}{h!}\label{fig:vis-concept-transformation-map}
+
+\myFigure{images/viz-concept-graphs}{Vizualizácia detekovaných zmien v čase ich vzniku \citep{Demsar2014}.}{viz-concept-graphs}{0.75}{h!}\label{fig:vviz-concept-graphs}
+
+Síce sa tieto práce venujú vizualizácií zmien v prúde dát a ich modelov, problémom je, že nevenujú takmer žiadnu pozornosť kvantitativnému, či expertnému vyhodnoteniu vizualizácií. Vo väčšine prác konštruujú autori vlastné závery bez používateľskej štúdie, či expertného posúdenia celej aplikácie ako celku. V tomto identifikujeme nedostatok a preto sa aj v našej práci zameriavame na interpretáciu výsledkov spolu s vizualizáciou modelu, pričom kladieme dôraz na zobrazenie zmien. Rovnako budeme venovať značnú pozornosť na vyhodnotenie našich výsledkov aby sme mohli rozumne posúdiť použiteľnosť navrhovanej metódy.
+
+
 
 
 
