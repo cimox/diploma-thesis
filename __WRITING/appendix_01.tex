@@ -6,10 +6,29 @@
 
 
 % ======== DOKUMENTACIA ======= %
+\section{Plán na zimný semester 2016/2017}\label{plan-zima}
+\begin{itemize}
+	\item Rozšírenie analýzy o ďalšie metódy a celkovo zpresnenie, zprehľadnenie a orezanie analýzy.
+	\item Dokončenie návhu vlastnej metódy.
+	\item Implementácia metódy.
+	\item Evaluácia metódy - toto je priamo súčasťou navrhovanej metódy.
+	\item Príprava článku na nejakú konferenciu, napr. IIT.SRC.
+	\item Prvý experiment s použitím Eye Tracker-a na evaluáciu vizualizácie výsledkov.
+\end{itemize}
+
+\section{Vyjadrenie k plneniu plánu zimného semestra}\label{plan-zima-vyjadrenie}
+Jedným z cieľov zimného semestra bolo rozšírenie analýzy. Môžme objektívne tvrdiť, že sa nám úspešne podarilo splniť tento cieľ. Časť analýzy projektu bola značne prehĺbená a rozšírená.
+\par
+Ďalším cieľom bolo dokončenie návrhu vlastnej metódy. Postupne a iteratívne sme celý semester pracovali na splnení tohto cieľa. Dnes, na konci zimného semestra máme presnú predstavu o tom ako má nami navrhovaná metóda vyzerať. Toto tvrdenie podporuje aj stav kapitoly \ref{Klasifikácia prúdu dát použitím rozhodovacích stromov}.
+\par
+Navrhovaná metóda bola implementovaná ako prvý prototyp. Tento prototyp ešte z ďaleka nepredstavuje finálnu verziu implementácie. Avšak, pomohol nám realizovať prvé jednoduché experimenty a teda aj výsledky, ktoré sú opäť prezentované v práci. Podarilo sa nám tiež implementovať prototyp, ktorý má jednoducho interpretovať a vizualizovať výsledky metódy požívateľovi.
+\par
+Síce sme implementovali prvé prototypy, evaluácia metódy bola len veľmi jednoduchá a základná. Napríklad nepodarilo sa nám splniť jeden zo stanovených cieľov - prvý experiment s použitím EyeTracker-a alebo používateľská štúdia.
+
 \section{Plán na letný semester 2016/2017}\label{plan-leto}
 Tento plán popisuje náš plán ďalšieho vývoja diplomovej práce v nasledujúcom letnom semestri na týždennej granularite. Pričom predpokladáme, že semester má 12 týždňov.
 \begin{itemize}
-	\item \textit{1-2 týžden}: Príprava článku na študentskú vedeckú konferenciu IIT.SRC.
+	\item \textit{1-2 týžden}: Príprava článku na študentskú vedeckú konferenciu IIT.SRC. V prvých dvoch týždňoch semestra sa chceme sústrediť na dokončenie vyhodnotenie experimentov. Tieto výsledky chceme prezentovať na IIT.SRC, preto bude tomuto potrebné venovať viac času.
 	\item \textit{3 týždeň}: Vyhodnotenie prezentovaných výsledkov na IIT.SRC, určenie ďalšieho smeru a priestoru na zlepšenie aktuálneho stavu implementovanej metódy.
 	\item \textit{4. týždeň}: Implementácia návrhov na zlepšenie metódy pre klasifikáciu a ich vyhodnotenie.
 	\item \textit{5. týždeň}: Implementácia návrhov na zlepšenie metódy pre vizualizáciu a ich vyhodnotenie. 
@@ -22,13 +41,21 @@ Tento plán popisuje náš plán ďalšieho vývoja diplomovej práce v nasleduj
 	\item \textit{12. týždeň}: Odovzdanie diplomovej práce.
 \end{itemize} 
 
-\section{Plán na zimný semester 2016/2017}\label{plan-zima}
+\section{Technická dokumentácia}\label{tech-doku}
+\textit{Obsah elektronického média}
 \begin{itemize}
-	\item Rozšírenie analýzy o ďalšie metódy a celkovo zpresnenie, zprehľadnenie a orezanie analýzy.
-	\item Dokončenie návhu vlastnej metódy.
-	\item Implementácia metódy.
-	\item Evaluácia metódy - toto je priamo súčasťou navrhovanej metódy.
-	\item Príprava článku na nejakú konferenciu, napr. IIT.SRC.
-	\item Prvý experiment s použitím Eye Tracker-a na evaluáciu vizualizácie výsledkov.
+	\item \textit{Thesis.pdf} obsahuje elektronickú verziu tejto práce.
+	\item Adresár \textit{moa-hfdt-extension} obsahuje rozšírenie nástroja MOA a experimenty, ktoré boli doteraz vykonané.
+	\item Adresár \textit{vis} obsahuje prototyp vizualizácie so vzorovými súbormi.
+	\item Adresár \textit{prototype} obsahuje prototyp webového rozhrania pre vizualizáciu.
 \end{itemize}
+
+\textit{Návod na inštaláciu}
+\begin{itemize}
+	\item Pre spustenie vizualizácie je potrebné povoliť v prehliadači cross-origin zdroje. Následné stačí dvojklikom spustiť súbor \textit{tree.html}.
+	\item Pre spustenie experimentov je potrebné nainštalovať IDE Intellij\footnote{https://jetbrains.com/} a importovať adresár \textit{moa-hfdt-extension} ako nový projekt. Importovaný projekt bude obsahovať všetky potrebné nastvenia pre spustenie.
+\end{itemize}
+
+
+
 
