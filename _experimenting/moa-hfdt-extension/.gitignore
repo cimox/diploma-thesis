@@ -58,3 +58,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+*.json
+sample.txt
+*.class

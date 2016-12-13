@@ -1,0 +1,67 @@
+{
+  "children": [
+    {
+      "split": {
+        "attribute": "att7",
+        "operator": "<=",
+        "operand": 0.6054657000888446
+      },
+      "children": [
+        {
+          "split": {
+            "attribute": "att1",
+            "operator": "<=",
+            "operand": 0.4916758892139059
+          },
+          "children": [
+            {
+              "className": "class1",
+              "classNum": 0,
+              "weights": "{1,156.411|689.326|883.32}",
+              "leaf": true
+            }
+          ],
+          "weights": "{2,237.541|1,443.104|3,163.909}",
+          "leaf": false
+        },
+        {
+          "split": {
+            "attribute": "att1",
+            "operator": ">",
+            "operand": 0.4916758892139059
+          },
+          "children": [
+            {
+              "className": "class3",
+              "classNum": 2,
+              "weights": "{167.589|182.674|1,041.68}",
+              "leaf": true
+            }
+          ],
+          "weights": "{2,237.541|1,443.104|3,163.909}",
+          "leaf": false
+        }
+      ],
+      "weights": "{2,094|2,480|3,626}",
+      "leaf": false
+    },
+    {
+      "split": {
+        "attribute": "att7",
+        "operator": ">",
+        "operand": 0.6054657000888446
+      },
+      "children": [
+        {
+          "className": "class2",
+          "classNum": 1,
+          "weights": "{755.459|2,533.896|2,345.091}",
+          "leaf": true
+        }
+      ],
+      "weights": "{2,094|2,480|3,626}",
+      "leaf": false
+    }
+  ],
+  "className": "root"
+}

@@ -1,0 +1,151 @@
+{
+  "children": [
+    {
+      "split": {
+        "attribute": "att7",
+        "operator": "<=",
+        "operand": 0.6054657000888446
+      },
+      "children": [
+        {
+          "split": {
+            "attribute": "att1",
+            "operator": "<=",
+            "operand": 0.4916758892139059
+          },
+          "children": [
+            {
+              "split": {
+                "attribute": "att9",
+                "operator": "<=",
+                "operand": 0.3816421943752609
+              },
+              "children": [
+                {
+                  "split": {
+                    "attribute": "att2",
+                    "operator": "<=",
+                    "operand": 0.4413045379002343
+                  },
+                  "children": [
+                    {
+                      "className": "class2",
+                      "classNum": 1,
+                      "weights": "{47.654|609.89|139.072}",
+                      "leaf": true
+                    }
+                  ],
+                  "weights": "{149.226|545.075|666.856}",
+                  "leaf": false
+                },
+                {
+                  "split": {
+                    "attribute": "att2",
+                    "operator": ">",
+                    "operand": 0.4413045379002343
+                  },
+                  "children": [
+                    {
+                      "className": "class3",
+                      "classNum": 2,
+                      "weights": "{57.346|191.11|1,089.928}",
+                      "leaf": true
+                    }
+                  ],
+                  "weights": "{149.226|545.075|666.856}",
+                  "leaf": false
+                }
+              ],
+              "weights": "{1,964.411|1,174.326|1,467.32}",
+              "leaf": false
+            },
+            {
+              "split": {
+                "attribute": "att9",
+                "operator": ">",
+                "operand": 0.3816421943752609
+              },
+              "children": [
+                {
+                  "className": "class1",
+                  "classNum": 0,
+                  "weights": "{4,052.774|1,280.925|1,430.144}",
+                  "leaf": true
+                }
+              ],
+              "weights": "{1,964.411|1,174.326|1,467.32}",
+              "leaf": false
+            }
+          ],
+          "weights": "{2,237.541|1,443.104|3,163.909}",
+          "leaf": false
+        },
+        {
+          "split": {
+            "attribute": "att1",
+            "operator": ">",
+            "operand": 0.4916758892139059
+          },
+          "children": [
+            {
+              "className": "class3",
+              "classNum": 2,
+              "weights": "{549.589|697.674|3,750.68}",
+              "leaf": true
+            }
+          ],
+          "weights": "{2,237.541|1,443.104|3,163.909}",
+          "leaf": false
+        }
+      ],
+      "weights": "{2,094|2,480|3,626}",
+      "leaf": false
+    },
+    {
+      "split": {
+        "attribute": "att7",
+        "operator": ">",
+        "operand": 0.6054657000888446
+      },
+      "children": [
+        {
+          "split": {
+            "attribute": "att4",
+            "operator": "<=",
+            "operand": 0.30139172268291414
+          },
+          "children": [
+            {
+              "className": "class3",
+              "classNum": 2,
+              "weights": "{99.004|421.851|2,266.55}",
+              "leaf": true
+            }
+          ],
+          "weights": "{1,142.459|3,661.896|3,351.091}",
+          "leaf": false
+        },
+        {
+          "split": {
+            "attribute": "att4",
+            "operator": ">",
+            "operand": 0.30139172268291414
+          },
+          "children": [
+            {
+              "className": "class2",
+              "classNum": 1,
+              "weights": "{1,461.996|4,258.149|2,228.45}",
+              "leaf": true
+            }
+          ],
+          "weights": "{1,142.459|3,661.896|3,351.091}",
+          "leaf": false
+        }
+      ],
+      "weights": "{2,094|2,480|3,626}",
+      "leaf": false
+    }
+  ],
+  "className": "root"
+}
